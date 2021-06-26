@@ -1,0 +1,949 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Btrfs</name>
+    </assembly>
+    <members>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.Data">
+            <summary>
+            The type of storage this block group offers. SYSTEM chunks cannot be mixed, but DATA and METADATA chunks can be mixed. 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.System">
+            <summary>
+            The type of storage this block group offers. SYSTEM chunks cannot be mixed, but DATA and METADATA chunks can be mixed. 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.Metadata">
+            <summary>
+            The type of storage this block group offers. SYSTEM chunks cannot be mixed, but DATA and METADATA chunks can be mixed. 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.Raid0">
+            <summary>
+            Striping 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.Raid1">
+            <summary>
+            Mirror on a separate device 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.Dup">
+            <summary>
+            Mirror on a single device
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.Raid10">
+            <summary>
+            Striping and mirroring 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.Raid5">
+            <summary>
+            Parity striping with single-disk fault tolerance 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.BlockGroupFlag.Raid6">
+            <summary>
+            Parity striping with double-disk fault tolerance 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.NoDataSum">
+            <summary>
+            Do not perform checksum operations on this inode.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.NoDataCow">
+            <summary>
+            Do not perform CoW for data extents on this inode when the reference count is 1.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.Readonly">
+            <summary>
+            Inode is read-only regardless of UNIX permissions or ownership.
+            </summary>
+            <remarks>
+            This bit is still checked and returns EACCES but there is no way to set it. That suggests that it has been superseded by IMMUTABLE.
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.NoCompress">
+            <summary>
+            Do not compress this inode.
+            </summary>
+            <remarks>
+            This flag may be changed by the kernel as compression ratios change.
+            If the compression ratio for data associated with an inode becomes undesirable,
+            this flag will be set. It may be cleared if the data changes and the compression ratio is favorable again.
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.Prealloc">
+            <summary>
+            Inode contains preallocated extents. This instructs the kernel to attempt to avoid CoWing those extents.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.Sync">
+            <summary>
+            Operations on this inode will be performed synchronously.
+            This flag is converted to a VFS-level inode flag but is not handled anywhere.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.Immutable">
+            <summary>
+            Inode is read-only regardless of UNIX permissions or ownership. Attempts to modify this inode will result in EPERM being returned to the user.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.Append">
+            <summary>
+            This inode is append-only.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.NoDump">
+            <summary>
+            This inode is not a candidate for dumping using the dump(8) program.
+            </summary>
+            <remarks>
+            This flag will be accepted on all kernels but is not implemented
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.NoATime">
+            <summary>
+            Do not update atime,when this inode is accessed.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.DirSync">
+            <summary>
+            Operations on directory operations will be performed synchronously.
+            </summary>
+            <remarks>
+            This flag is converted to a VFS-level inode flag but is not handled anywhere.
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.InodeFlag.Compress">
+            Compression is enabled on this inode.
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.InternalNode.KeyPointers">
+            <summary>
+            key pointers
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.InternalNode.Nodes">
+            <summary>
+            data at <see cref="P:DiscUtils.Btrfs.Base.InternalNode.KeyPointers"/>
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.BaseItem">
+            <summary>
+            Maps logical address to physical
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.ChunkItem">
+            <summary>
+            Maps logical address to physical
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.ChunkSize">
+            <summary>
+            size of chunk (bytes)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.ObjectId">
+            <summary>
+            root referencing this chunk (2)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.StripeLength">
+            <summary>
+            stripe length
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.Type">
+            <summary>
+            type (same as flags for block group?)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.OptimalIoAlignment">
+            <summary>
+            optimal io alignment
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.OptimalIoWidth">
+            <summary>
+            optimal io width
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.MinimalIoSize">
+            <summary>
+            minimal io size (sector size)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.StripeCount">
+            <summary>
+            number of stripes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ChunkItem.SubStripes">
+            <summary>
+            sub stripes
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.DevItem">
+            <summary>
+            Maps logical address to physical
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.DeviceId">
+            <summary>
+             the internal btrfs device id  
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.DeviceSize">
+            <summary>
+             size of the device  
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.DeviceSizeUsed">
+            <summary>
+              number of bytes used 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.OptimalIoAlignment">
+            <summary>
+            optimal io alignment
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.OptimalIoWidth">
+            <summary>
+            optimal io width
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.MinimalIoSize">
+            <summary>
+            minimal io size (sector size)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.Type">
+            <summary>
+            type and info about this device 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.Generation">
+            <summary>
+            expected generation for this device 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.StartOffset">
+            <summary>
+            starting byte of this partition on the device,
+            to allow for stripe alignment in the future
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.DevGroup">
+            <summary>
+            grouping information for allocation decisions 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.SeekSpeed">
+            <summary>
+            seek speed 0-100 where 100 is fastest 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.Bandwidth">
+            <summary>
+            bandwidth 0-100 where 100 is fastest 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.DeviceUuid">
+            <summary>
+            btrfs generated uuid for this device 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DevItem.FsUuid">
+            <summary>
+            uuid of FS who owns this device 
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.DirIndex">
+            <summary>
+            From an inode to a name in a directory
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.DirItem">
+            <summary>
+            From an inode to a name in a directory
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DirItem.ChildLocation">
+            <summary>
+            Key for the <see cref="T:DiscUtils.Btrfs.Base.Items.InodeItem"/> or <see cref="T:DiscUtils.Btrfs.Base.Items.RootItem"/> associated with this entry.
+            Unused and zeroed out when the entry describes an extended attribute.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DirItem.TransId">
+            <summary>
+            transid
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DirItem.DataLength">
+            <summary>
+            (m)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DirItem.NameLength">
+            <summary>
+            (n)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DirItem.ChildType">
+            <summary>
+            type of child
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DirItem.Name">
+            <summary>
+            name of item in directory 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.DirItem.Data">
+            <summary>
+            data of item in directory (empty for normal directory items)
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.ExtentData">
+            <summary>
+            The contents of a file
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.Generation">
+            <summary>
+             generation 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.DecodedSize">
+            <summary>
+             (n) size of decoded extent 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.Compression">
+            <summary>
+             compression (0=none, 1=zlib, 2=LZO) 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.Encryption">
+            <summary>
+             encryption (0=none) 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.Type">
+            <summary>
+             type (0=inline, 1=regular, 2=prealloc) 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.InlineData">
+            <summary>
+            If the extent is inline, the bytes are the data bytes (n bytes in case no compression/encryption/other encoding is used)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.ExtentAddress">
+            <summary>
+             (ea) logical address of extent. If this is zero, the extent is sparse and consists of all zeroes. 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.ExtentSize">
+            <summary>
+             (es) size of extent 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.ExtentOffset">
+            <summary>
+             (o) offset within the extent 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.ExtentData.LogicalSize">
+            <summary>
+             (s) logical number of bytes in file 
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.InodeItem">
+            <summary>
+            define the location and parameters of the root of a btree
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.FileSize">
+            <summary>
+            Size of the file in bytes.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.NBytes">
+            <summary>
+            Size allocated to this file, in bytes;
+            Sum of the offset fields of all EXTENT_DATA items for this inode. For directories: 0.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.BlockGroup">
+            <summary>
+            Unused for normal inodes. Contains byte offset of block group when used as a free space inode.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.LinkCount">
+            <summary>
+            Count of INODE_REF entries for the inode. When used outside of a file tree, 1.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.Uid">
+            <summary>
+            stat.st_uid
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.Gid">
+            <summary>
+            stat.st_gid
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.Mode">
+            <summary>
+            stat.st_mode
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.RDev">
+            <summary>
+            stat.st_rdev
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.Flags">
+            <summary>
+            Inode flags
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.Sequence">
+            <summary>
+            Sequence number used for NFS compatibility. Initialized to 0 and incremented each time mtime value is changed.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.ATime">
+            <summary>
+            stat.st_atime
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.CTime">
+            <summary>
+            stat.st_ctime
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.MTime">
+            <summary>
+            stat.st_mtime
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeItem.OTime">
+            <summary>
+            Timestamp of inode creation
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.InodeRef">
+            <summary>
+            From an inode to a name in a directory
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeRef.Index">
+            <summary>
+             index in the directory  
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeRef.NameLength">
+            <summary>
+            (n)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.InodeRef.Name">
+            <summary>
+             name in the directory 
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.OrphanItem">
+            <summary>
+            Maps logical address to physical
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.RootBackref">
+            <summary>
+            From an inode to a name in a directory
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.RootItem">
+            <summary>
+            Contains the stat information for an inode
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.Inode">
+            <summary>
+            Several fields are initialized but only flags is interpreted at runtime.
+            generation=1, size=3,nlink=1, nbytes=leafsize, mode=040755
+            flags depends on kernel version.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.Generation">
+            <summary>
+            transid of the transaction that created this root. 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.RootDirId">
+            <summary>
+            For file trees, the objectid of the root directory in this tree (always 256). Otherwise, 0.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.ByteNr">
+            <summary>
+            The disk offset in bytes for the root node of this tree.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.ByteLimit">
+            <summary>
+            Unused. Always 0.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.BytesUsed">
+            <summary>
+            Unused
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.LastSnapshot">
+            <summary>
+            The last transid of the transaction that created a snapshot of this root.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.Flags">
+            <summary>
+            flags
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.Refs">
+            <summary>
+            Originally indicated a reference count. In modern usage, it is only 0 or 1.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.DropProgress">
+            <summary>
+            Contains key of last dropped item during subvolume removal or relocation. Zeroed otherwise.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.DropLevel">
+            <summary>
+            The tree level of the node described in drop_progress.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootItem.Level">
+            <summary>
+            The height of the tree rooted at bytenr.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.RootRef">
+            <summary>
+            From an inode to a name in a directory
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootRef.DirectoryId">
+            <summary>
+            ID of directory in [tree id] that contains the subtree  
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootRef.Sequence">
+            <summary>
+            Sequence (index in tree) (even, starting at 2?)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootRef.NameLength">
+            <summary>
+            (n)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Items.RootRef.Name">
+            <summary>
+            name
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Items.XattrItem">
+            <summary>
+            Maps logical address to physical
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Key.ObjectId">
+            <summary>
+            Object ID. Each tree has its own set of Object IDs.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Key.ItemType">
+            <summary>
+            Item type.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Key.Offset">
+            <summary>
+            Offset. The meaning depends on the item type. 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.KeyPointer.Key">
+            <summary>
+            key
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.KeyPointer.BlockNumber">
+            <summary>
+            block number
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.KeyPointer.Generation">
+            <summary>
+            generation
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.LeafNode.Items">
+            <summary>
+            key pointers
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.Checksum">
+            <summary>
+            Checksum of everything past this field (from 20 to the end of the node)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.FsUuid">
+            <summary>
+            FS UUID
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.LogicalAddress">
+            <summary>
+            Logical address of this node
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.Flags">
+            <summary>
+            Flags
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.BackrefRevision">
+            <summary>
+            Backref. Rev.: always 1 (MIXED) for new filesystems; 0 (OLD) indicates an old filesystem.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.ChunkTreeUuid">
+            <summary>
+            Chunk tree UUID
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.Generation">
+            <summary>
+            Logical address of this node
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.TreeId">
+            <summary>
+            The ID of the tree that contains this node
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.ItemCount">
+            <summary>
+            Number of items
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.NodeHeader.Level">
+            <summary>
+            Level (0 for leaf nodes)
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.ReservedObjectId">
+            <summary>
+            All root objectids between FIRST_FREE = 256ULL and LAST_FREE = -256ULL refer to file trees.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.RootTree">
+            <summary>
+            The object id that refers to the ROOT_TREE itself
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.ExtentTree">
+            <summary>
+            The objectid that refers to the EXTENT_TREE
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.ChunkTree">
+            <summary>
+            The objectid that refers to the root of the CHUNK_TREE
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.DevTree">
+            <summary>
+            The objectid that refers to the root of the DEV_TREE
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.FsTree">
+            <summary>
+            The objectid that refers to the global FS_TREE root
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.CsumTree">
+            <summary>
+            The objectid that refers to the CSUM_TREE
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.QuotaTree">
+            <summary>
+            The objectid that refers to the QUOTA_TREE
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.UuidTree">
+            <summary>
+            The objectid that refers to the UUID_TREE
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.FreeSpaceTree">
+            <summary>
+            The objectid that refers to the FREE_SPACE_TREE
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.TreeLog">
+            <summary>
+            The objectid that refers to the TREE_LOG tree
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.TreeReloc">
+            <summary>
+            The objectid that refers to the TREE_RELOC tree
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.DataRelocTree">
+            <summary>
+            The objectid that refers to the DATA_RELOC tree
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.RootTreeDir">
+            <summary>
+            The objectid that refers to the directory within the root tree. 
+             </summary>
+            <remarks>
+            If it exists, it will have the usual items used to implement a directory associated with it
+            There will only be a single entry called default that points to a key to be used as the root directory on the file system instead of the FS_TREE
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.Orphan">
+            <summary>
+            The objectid used for orphan root tracking
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Btrfs.Base.ReservedObjectId.FirstChunkTree">
+            <summary>
+            This objectid indicates the first available objectid in this CHUNK_TREE.
+            In practice, it is the only objectid used in the tree.
+            The offset field of the key is the only component used to distinguish separate CHUNK_ITEM items. 
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.Base.Stripe">
+            <summary>
+            Maps logical address to physical
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Stripe.DeviceId">
+            <summary>
+            device id
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Stripe.Offset">
+            <summary>
+            offset
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.Stripe.DeviceUuid">
+            <summary>
+            device UUID
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.TimeSpec.Seconds">
+            <summary>
+            Number of seconds since 1970-01-01T00:00:00Z. 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.Base.TimeSpec.Nanoseconds">
+            <summary>
+            Number of nanoseconds since the beginning of the second. 
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Btrfs.BtrfsFileSystem">
+            <summary>
+            Read-only access to btrfs file system.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Btrfs.BtrfsFileSystem.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the BtrfsFileSystem class.
+            </summary>
+            <param name="stream">The stream containing the btrfs file system.</param>
+        </member>
+        <member name="M:DiscUtils.Btrfs.BtrfsFileSystem.#ctor(System.IO.Stream,DiscUtils.Btrfs.BtrfsFileSystemOptions)">
+            <summary>
+            Initializes a new instance of the BtrfsFileSystem class.
+            </summary>
+            <param name="stream">The stream containing the btrfs file system.</param>
+            <param name="options">Options for opening the file system</param>
+        </member>
+        <member name="M:DiscUtils.Btrfs.BtrfsFileSystem.GetSubvolumes">
+            <summary>
+            retrieve all subvolumes
+            </summary>
+            <returns>a list of subvolumes with id and name</returns>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.Checksum">
+            <summary>
+            Checksum of everything past this field (from 20 to 1000)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.FsUuid">
+            <summary>
+            FS UUID
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.PhysicalAddress">
+            <summary>
+            physical address of this block (different for mirrors)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.Flags">
+            <summary>
+            flags       
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.Magic">
+            <summary>
+            magic ("_BHRfS_M") 
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.Generation">
+            <summary>
+            generation
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.Root">
+            <summary>
+            logical address of the root tree root
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.ChunkRoot">
+            <summary>
+            logical address of the chunk tree root
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.LogRoot">
+            <summary>
+            logical address of the log tree root
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.LogRootTransId">
+            <summary>
+            log_root_transid
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.TotalBytes">
+            <summary>
+            total_bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.BytesUsed">
+            <summary>
+            bytes_used
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.RootDirObjectid">
+            <summary>
+            root_dir_objectid (usually 6)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.NumDevices">
+            <summary>
+            num_devices
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.SectorSize">
+            <summary>
+            sectorsize
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.NodeSize">
+            <summary>
+            nodesize
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.LeafSize">
+            <summary>
+            leafsize
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.StripeSize">
+            <summary>
+            stripesize
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.ChunkRootGeneration">
+            <summary>
+            chunk_root_generation
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.CompatFlags">
+            <summary>
+            compat_flags
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.CompatRoFlags">
+            <summary>
+            compat_ro_flags - only implementations that support the flags can write to the filesystem
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.IncompatFlags">
+            <summary>
+            incompat_flags - only implementations that support the flags can use the filesystem
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.ChecksumType">
+            <summary>
+            csum_type - Btrfs currently uses the CRC32c little-endian hash function with seed -1.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.RootLevel">
+            <summary>
+            root_level
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.ChunkRootLevel">
+            <summary>
+            chunk_root_level
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.LogRootLevel">
+            <summary>
+            log_root_level
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.SuperBlock.Label">
+            <summary>
+            label (may not contain '/' or '\\')
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.VfsBtrfsFileSystem.VolumeLabel">
+            <inheritdoc />
+        </member>
+        <member name="P:DiscUtils.Btrfs.VfsBtrfsFileSystem.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.VfsBtrfsFileSystem.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Btrfs.VfsBtrfsFileSystem.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+    </members>
+</doc>

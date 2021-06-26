@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Xva</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Xva.Disk">
+            <summary>
+            Class representing a disk containing within an XVA file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xva.Disk.Capacity">
+            <summary>
+            Gets the disk's capacity (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xva.Disk.Content">
+            <summary>
+            Gets the content of the disk as a stream.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xva.Disk.DiskClass">
+            <summary>
+            Gets the type of disk represented by this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xva.Disk.DiskTypeInfo">
+            <summary>
+            Gets information about the type of disk.
+            </summary>
+            <remarks>This property provides access to meta-data about the disk format, for example whether the
+            BIOS geometry is preserved in the disk file.</remarks>
+        </member>
+        <member name="P:DiscUtils.Xva.Disk.DisplayName">
+            <summary>
+            Gets the display name of the disk, as shown by XenServer.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xva.Disk.Geometry">
+            <summary>
+            Gets the disk's geometry.
+            </summary>
+            <remarks>The geometry is not stored with the disk, so this is at best
+            a guess of the actual geometry.</remarks>
+        </member>
+        <member name="P:DiscUtils.Xva.Disk.Layers">
+            <summary>
+            Gets the (single) layer of an XVA disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xva.Disk.Uuid">
+            <summary>
+            Gets the Unique id of the disk, as known by XenServer.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xva.Disk.CreateDifferencingDisk(DiscUtils.DiscFileSystem,System.String)">
+            <summary>
+            Create a new differencing disk, possibly within an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to create the disk on.</param>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Xva.Disk.CreateDifferencingDisk(System.String)">
+            <summary>
+            Create a new differencing disk.
+            </summary>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Xva.Disk.Dispose(System.Boolean)">
+            <summary>
+            Disposes of this instance, freeing underlying resources.
+            </summary>
+            <param name="disposing"><c>true</c> if running inside Dispose(), indicating
+            graceful cleanup of all managed objects should be performed, or <c>false</c>
+            if running inside destructor.</param>
+        </member>
+        <member name="T:DiscUtils.Xva.DiskLayer">
+            <summary>
+            Class representing a single layer of an XVA disk.
+            </summary>
+            <remarks>XVA only supports a single layer.</remarks>
+        </member>
+        <member name="P:DiscUtils.Xva.DiskLayer.Capacity">
+            <summary>
+            Gets the capacity of the layer (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xva.DiskLayer.Geometry">
+            <summary>
+            Gets the disk's geometry.
+            </summary>
+            <remarks>The geometry is not stored with the disk, so this is at best
+            a guess of the actual geometry.</remarks>
+        </member>
+        <member name="P:DiscUtils.Xva.DiskLayer.IsSparse">
+            <summary>
+            Gets a indication of whether the disk is 'sparse'.
+            </summary>
+            <remarks>Always true for XVA disks.</remarks>
+        </member>
+        <member name="P:DiscUtils.Xva.DiskLayer.NeedsParent">
+            <summary>
+            Gets a value indicating whether the file is a differencing disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xva.DiskLayer.OpenContent(DiscUtils.Streams.SparseStream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Opens the content of the disk layer as a stream.
+            </summary>
+            <param name="parent">The parent file's content (if any).</param>
+            <param name="ownsParent">Whether the created stream assumes ownership of parent stream.</param>
+            <returns>The new content stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Xva.DiskLayer.GetParentLocations">
+            <summary>
+            Gets the possible locations of the parent file (if any).
+            </summary>
+            <returns>Array of strings, empty if no parent.</returns>
+        </member>
+        <member name="T:DiscUtils.Xva.VirtualMachine">
+            <summary>
+            Class representing the virtual machine stored in a Xen Virtual Appliance (XVA)
+            file.
+            </summary>
+            <remarks>XVA is a VM archive, not just a disk archive.  It can contain multiple
+            disk images.  This class provides access to all of the disk images within the
+            XVA file.</remarks>
+        </member>
+        <member name="M:DiscUtils.Xva.VirtualMachine.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the VirtualMachine class.
+            </summary>
+            <param name="fileStream">The stream containing the .XVA file.</param>
+            <remarks>
+            Ownership of the stream is not transfered.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Xva.VirtualMachine.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the VirtualMachine class.
+            </summary>
+            <param name="fileStream">The stream containing the .XVA file.</param>
+            <param name="ownership">Whether to transfer ownership of <c>fileStream</c> to the new instance.</param>
+        </member>
+        <member name="P:DiscUtils.Xva.VirtualMachine.Disks">
+            <summary>
+            Gets the disks in this XVA.
+            </summary>
+            <returns>An enumeration of disks.</returns>
+        </member>
+        <member name="M:DiscUtils.Xva.VirtualMachine.Dispose">
+            <summary>
+            Disposes of this object, freeing any owned resources.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Xva.VirtualMachineBuilder">
+            <summary>
+            A class that can be used to create Xen Virtual Appliance (XVA) files.
+            </summary>
+            <remarks>This class is not intended to be a general purpose XVA generator,
+            the options to control the VM properties are strictly limited.  The class
+            generates a minimal VM really as a wrapper for one or more disk images, 
+            making them easy to import into XenServer.</remarks>
+        </member>
+        <member name="M:DiscUtils.Xva.VirtualMachineBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the VirtualMachineBuilder class.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xva.VirtualMachineBuilder.DisplayName">
+            <summary>
+            Gets or sets the display name of the VM.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xva.VirtualMachineBuilder.Dispose">
+            <summary>
+            Disposes this instance, including any underlying resources.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xva.VirtualMachineBuilder.AddDisk(System.String,DiscUtils.Streams.SparseStream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Adds a sparse disk image to the XVA file.
+            </summary>
+            <param name="label">The admin-visible name of the disk.</param>
+            <param name="content">The content of the disk.</param>
+            <param name="ownsContent">Indicates if ownership of content is transfered.</param>
+        </member>
+        <member name="M:DiscUtils.Xva.VirtualMachineBuilder.AddDisk(System.String,System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Adds a disk image to the XVA file.
+            </summary>
+            <param name="label">The admin-visible name of the disk.</param>
+            <param name="content">The content of the disk.</param>
+            <param name="ownsContent">Indicates if ownership of content is transfered.</param>
+        </member>
+        <member name="M:DiscUtils.Xva.VirtualMachineBuilder.Build">
+            <summary>
+            Creates a new stream that contains the XVA image.
+            </summary>
+            <returns>The new stream.</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Ext</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Ext.CompatibleFeatures">
+            <summary>
+            Feature flags for backwards compatible features.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.CompatibleFeatures.DirectoryPreallocation">
+            <summary>
+            Indicates pre-allocation hints are present.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.CompatibleFeatures.IMagicInodes">
+            <summary>
+            AFS support in inodex.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.CompatibleFeatures.HasJournal">
+            <summary>
+            Indicates an EXT3-style journal is present.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.CompatibleFeatures.ExtendedAttributes">
+            <summary>
+            Indicates extended attributes (e.g. FileACLs) are present.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.CompatibleFeatures.ResizeInode">
+            <summary>
+            Indicates space is reserved through a special inode to enable the file system to be resized dynamically.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.CompatibleFeatures.DirectoryIndex">
+            <summary>
+            Indicates that directory indexes are present (not used in mainline?).
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ext.ExtFileSystem">
+            <summary>
+            Read-only access to ext file system.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ext.ExtFileSystem.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the ExtFileSystem class.
+            </summary>
+            <param name="stream">The stream containing the ext file system.</param>
+        </member>
+        <member name="M:DiscUtils.Ext.ExtFileSystem.#ctor(System.IO.Stream,DiscUtils.FileSystemParameters)">
+            <summary>
+            Initializes a new instance of the ExtFileSystem class.
+            </summary>
+            <param name="stream">The stream containing the ext file system.</param>
+            <param name="parameters">The generic file system parameters (only file name encoding is honoured).</param>
+        </member>
+        <member name="M:DiscUtils.Ext.ExtFileSystem.GetUnixFileInfo(System.String)">
+            <summary>
+            Retrieves Unix-specific information about a file or directory.
+            </summary>
+            <param name="path">Path to the file or directory.</param>
+            <returns>Information about the owner, group, permissions and type of the
+            file or directory.</returns>
+        </member>
+        <member name="T:DiscUtils.Ext.ExtFileSystemOptions">
+            <summary>
+            EXT file system options.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ext.ExtFileSystemOptions.FileNameEncoding">
+            <summary>
+            Gets or sets the character encoding used for file names.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ext.IncompatibleFeatures">
+            <summary>
+            Feature flags for features backwards compatible with read-only mounting.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.IncompatibleFeatures.Compression">
+            <summary>
+            File compression used (not used in mainline?).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.IncompatibleFeatures.FileType">
+            <summary>
+            Indicates that directory entries contain a file type field (uses byte of file name length field).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.IncompatibleFeatures.NeedsRecovery">
+            <summary>
+            Ext3 feature - indicates a dirty journal, that needs to be replayed (safe for read-only access, not for read-write).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.IncompatibleFeatures.IsJournalDevice">
+            <summary>
+            Ext3 feature - indicates the file system is a dedicated EXT3 journal, not an actual file system.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.IncompatibleFeatures.MetaBlockGroup">
+            <summary>
+            Indicates the file system saves space by only allocating backup space for the superblock in groups storing it (used with SparseSuperBlock).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.IncompatibleFeatures.Extents">
+            <summary>
+            Ext4 feature to store files as extents.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.IncompatibleFeatures.SixtyFourBit">
+            <summary>
+            Ext4 feature to support some 64-bit fields.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.IncompatibleFeatures.FlexBlockGroups">
+            <summary>
+            Ext4 feature for storage of block groups.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ext.InodeFlags">
+            <summary>
+            Inode flags.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ext.JournalSuperBlock.Size">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Ext.JournalSuperBlock.ReadFrom(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Ext.JournalSuperBlock.WriteTo(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="T:DiscUtils.Ext.ReadOnlyCompatibleFeatures">
+            <summary>
+            Feature flags for features backwards compatible with read-only mounting.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.ReadOnlyCompatibleFeatures.SparseSuperblock">
+            <summary>
+            Indicates that not all block groups contain a backup superblock.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.ReadOnlyCompatibleFeatures.LargeFiles">
+            <summary>
+            Indicates file system contains files greater than 0x7FFFFFFF in size (limit of unsigned uints).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.ReadOnlyCompatibleFeatures.BtreeDirectory">
+            <summary>
+            Indicates BTree-style directories present (not used in mainline?).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.ReadOnlyCompatibleFeatures.HugeFile">
+            <summary>
+            Ext4 feature - support for storing huge files.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.ReadOnlyCompatibleFeatures.GdtChecksum">
+            <summary>
+            Ext4 feature - checksum block group structures.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.ReadOnlyCompatibleFeatures.DirNlink">
+            <summary>
+            Ext4 feature - Unknown.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.ReadOnlyCompatibleFeatures.ExtraInodeSize">
+            <summary>
+            Ext4 feature - extra inode size.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ext.SuperBlock.OldRevision">
+            <summary>
+            Old revision, not supported by DiscUtils.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ext.VfsExtFileSystem.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ext.VfsExtFileSystem.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ext.VfsExtFileSystem.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+    </members>
+</doc>

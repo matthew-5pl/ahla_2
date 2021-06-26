@@ -1,0 +1,1224 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.BootConfig</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.BootConfig.ApplicationImageType">
+            <summary>
+            Enumeration of known application image types.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationImageType.None">
+            <summary>
+            Unknown type.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationImageType.Firmware">
+            <summary>
+            Firmware application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationImageType.WindowsBoot">
+            <summary>
+            Windows boot loader.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationImageType.LegacyLoader">
+            <summary>
+            Legacy boot loader.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationImageType.RealMode">
+            <summary>
+            Real mode boot loader.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.BootConfig.ApplicationType">
+            <summary>
+            Enumeration of known application types.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.None">
+            <summary>
+            Unknown type.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.FirmwareBootManager">
+            <summary>
+            Firmware boot manager (e.g. UEFI).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.BootManager">
+            <summary>
+            Windows boot manager.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.OsLoader">
+            <summary>
+            Operating System Loader.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.Resume">
+            <summary>
+            Resume loader.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.MemoryDiagnostics">
+            <summary>
+            Memory diagnostic application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.NtLoader">
+            <summary>
+            Legacy NT loader application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.SetupLoader">
+            <summary>
+            Windows setup application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.BootSector">
+            <summary>
+            Boot sector application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ApplicationType.Startup">
+            <summary>
+            Startup application.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.BootConfig.BaseStorage">
+            <summary>
+            Base class for BCD storage repositories.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BaseStorage.HasValue(System.Guid,System.Int32)">
+            <summary>
+            Tests if an element is present (i.e. has a value) on an object.
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <param name="element">The element to inspect.</param>
+            <returns><c>true</c> if present, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BaseStorage.GetString(System.Guid,System.Int32)">
+            <summary>
+            Gets the value of a string element.
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <param name="element">The element to retrieve.</param>
+            <returns>The value as a string.</returns>
+        </member>
+        <member name="T:DiscUtils.BootConfig.BcdObject">
+            <summary>
+            Represents a Boot Configuration Database object (application, device or inherited settings).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.EmsSettingsGroupId">
+            <summary>
+            Well-known object for Emergency Management Services settings.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.ResumeLoaderSettingsGroupId">
+            <summary>
+            Well-known object for the Resume boot loader.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.DefaultBootEntryId">
+            <summary>
+            Alias for the Default boot entry.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.DebuggerSettingsGroupId">
+            <summary>
+            Well-known object for Emergency Management Services settings.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.WindowsLegacyNtldrId">
+            <summary>
+            Well-known object for NTLDR application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.BadMemoryGroupId">
+            <summary>
+            Well-known object for bad memory settings.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.BootLoaderSettingsGroupId">
+            <summary>
+            Well-known object for Boot Loader settings.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.WindowsSetupEfiId">
+            <summary>
+            Well-known object for EFI setup.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.GlobalSettingsGroupId">
+            <summary>
+            Well-known object for Global settings.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.WindowsBootManagerId">
+            <summary>
+            Well-known object for Windows Boot Manager.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.WindowsOsTargetTemplatePcatId">
+            <summary>
+            Well-known object for PCAT Template.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.FirmwareBootManagerId">
+            <summary>
+            Well-known object for Firmware Boot Manager.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.WindowsSetupRamdiskOptionsId">
+            <summary>
+            Well-known object for Windows Setup RAMDISK options.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.WindowsOsTargetTemplateEfiId">
+            <summary>
+            Well-known object for EFI template.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.WindowsMemoryTesterId">
+            <summary>
+            Well-known object for Windows memory tester application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.WindowsSetupPcatId">
+            <summary>
+            Well-known object for Windows PCAT setup.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.BcdObject.CurrentBootEntryId">
+            <summary>
+            Alias for the current boot entry.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.BcdObject.ApplicationImageType">
+            <summary>
+            Gets the image type for this application.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.BcdObject.ApplicationType">
+            <summary>
+            Gets the application type for this application.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.BcdObject.Elements">
+            <summary>
+            Gets the elements in this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.BcdObject.FriendlyName">
+            <summary>
+            Gets the friendly name for this object, if known.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.BcdObject.Identity">
+            <summary>
+            Gets the identity of this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.BcdObject.ObjectType">
+            <summary>
+            Gets the object type for this object.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.IsInheritableBy(DiscUtils.BootConfig.ObjectType)">
+            <summary>
+            Indicates if the settings in this object are inheritable by another object.
+            </summary>
+            <param name="type">The type of the object to test for inheritability.</param>
+            <returns><c>true</c> if the settings can be inherited, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.HasElement(System.Int32)">
+            <summary>
+            Indicates if this object has a specific element.
+            </summary>
+            <param name="id">The identity of the element to look for.</param>
+            <returns><c>true</c> if present, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.HasElement(DiscUtils.BootConfig.WellKnownElement)">
+            <summary>
+            Indicates if this object has a specific element.
+            </summary>
+            <param name="id">The identity of the element to look for.</param>
+            <returns><c>true</c> if present, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.GetElement(System.Int32)">
+            <summary>
+            Gets a specific element in this object.
+            </summary>
+            <param name="id">The identity of the element to look for.</param>
+            <returns>The element object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.GetElement(DiscUtils.BootConfig.WellKnownElement)">
+            <summary>
+            Gets a specific element in this object.
+            </summary>
+            <param name="id">The identity of the element to look for.</param>
+            <returns>The element object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.AddElement(System.Int32,DiscUtils.BootConfig.ElementValue)">
+            <summary>
+            Adds an element in this object.
+            </summary>
+            <param name="id">The identity of the element to add.</param>
+            <param name="initialValue">The initial value of the element.</param>
+            <returns>The element object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.AddElement(DiscUtils.BootConfig.WellKnownElement,DiscUtils.BootConfig.ElementValue)">
+            <summary>
+            Adds an element in this object.
+            </summary>
+            <param name="id">The identity of the element to add.</param>
+            <param name="initialValue">The initial value of the element.</param>
+            <returns>The element object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.RemoveElement(System.Int32)">
+            <summary>
+            Removes a specific element.
+            </summary>
+            <param name="id">The element to remove.</param>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.RemoveElement(DiscUtils.BootConfig.WellKnownElement)">
+            <summary>
+            Removes a specific element.
+            </summary>
+            <param name="id">The element to remove.</param>
+        </member>
+        <member name="M:DiscUtils.BootConfig.BcdObject.ToString">
+            <summary>
+            Returns the object identity as a GUID string.
+            </summary>
+            <returns>A string representation, with surrounding curly braces.</returns>
+        </member>
+        <member name="T:DiscUtils.BootConfig.Element">
+            <summary>
+            Represents an element in a Boot Configuration Database object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.Element.Class">
+            <summary>
+            Gets the class of the element.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.Element.Format">
+            <summary>
+            Gets the element's format.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.Element.FriendlyName">
+            <summary>
+            Gets the friendly name of the element, if any.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.Element.Value">
+            <summary>
+            Gets or sets the element's value.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Element.ToString">
+            <summary>
+            Gets the element's id as a hex string.
+            </summary>
+            <returns>A hex string.</returns>
+        </member>
+        <member name="T:DiscUtils.BootConfig.ElementClass">
+            <summary>
+            The known classes of element.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementClass.None">
+            <summary>
+            Unknown class.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementClass.Library">
+            <summary>
+            Common setting.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementClass.Application">
+            <summary>
+            An application setting.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementClass.Device">
+            <summary>
+            A device (or partition) setting.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementClass.Hidden">
+            <summary>
+            A hidden setting.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.BootConfig.ElementFormat">
+            <summary>
+            The known formats used to store BCD values.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementFormat.None">
+            <summary>
+            Unknown format.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementFormat.Device">
+            <summary>
+            A block device, or partition.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementFormat.String">
+            <summary>
+            A unicode string.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementFormat.Guid">
+            <summary>
+            A Globally Unique Identifier (GUID).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementFormat.GuidList">
+            <summary>
+            A GUID list.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementFormat.Integer">
+            <summary>
+            An integer.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementFormat.Boolean">
+            <summary>
+            A boolean.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ElementFormat.IntegerList">
+            <summary>
+            An integer list.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.BootConfig.ElementValue">
+            <summary>
+            The value of an element.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.ElementValue.Format">
+            <summary>
+            Gets the format of the value.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.BootConfig.ElementValue.ParentObject">
+            <summary>
+            Gets the parent object (only for Device values).
+            </summary>
+        </member>
+        <member name="M:DiscUtils.BootConfig.ElementValue.ForDevice(System.Guid,DiscUtils.PhysicalVolumeInfo)">
+            <summary>
+            Gets a value representing a device (aka partition).
+            </summary>
+            <param name="parentObject">Object containing detailed information about the device.</param>
+            <param name="physicalVolume">The volume to represent.</param>
+            <returns>The value as an object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.ElementValue.ForBootDevice">
+            <summary>
+            Gets a value representing the logical boot device.
+            </summary>
+            <returns>The boot pseudo-device as an object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.ElementValue.ForString(System.String)">
+            <summary>
+            Gets a value representing a string value.
+            </summary>
+            <param name="value">The value to convert.</param>
+            <returns>The value as an object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.ElementValue.ForInteger(System.Int64)">
+            <summary>
+            Gets a value representing an integer value.
+            </summary>
+            <param name="value">The value to convert.</param>
+            <returns>The value as an object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.ElementValue.ForIntegerList(System.Int64[])">
+            <summary>
+            Gets a value representing an integer list value.
+            </summary>
+            <param name="values">The value to convert.</param>
+            <returns>The value as an object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.ElementValue.ForBoolean(System.Boolean)">
+            <summary>
+            Gets a value representing a boolean value.
+            </summary>
+            <param name="value">The value to convert.</param>
+            <returns>The value as an object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.ElementValue.ForGuid(System.Guid)">
+            <summary>
+            Gets a value representing a GUID value.
+            </summary>
+            <param name="value">The value to convert.</param>
+            <returns>The value as an object.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.ElementValue.ForGuidList(System.Guid[])">
+            <summary>
+            Gets a value representing a GUID list value.
+            </summary>
+            <param name="values">The value to convert.</param>
+            <returns>The value as an object.</returns>
+        </member>
+        <member name="T:DiscUtils.BootConfig.InheritType">
+            <summary>
+            Indicates the type of objects that can inherit from an object.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.InheritType.None">
+            <summary>
+            Undefined value.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.InheritType.AnyObject">
+            <summary>
+            Any type of object may inherit from this object.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.InheritType.ApplicationObjects">
+            <summary>
+            Only Application objects may inherit from this object.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.InheritType.DeviceObjects">
+            <summary>
+            Only Device objects may inherit from this object.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.BootConfig.ObjectType">
+            <summary>
+            Enumeration of known object types.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ObjectType.None">
+            <summary>
+            An unknown type.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ObjectType.Application">
+            <summary>
+            An application object.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ObjectType.Inherit">
+            <summary>
+            Inheritable common settings.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.ObjectType.Device">
+            <summary>
+            Device (or partition) object.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.BootConfig.Store">
+            <summary>
+            Represents a Boot Configuration Database store (i.e. a BCD file).
+            </summary>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.#ctor(DiscUtils.Registry.RegistryKey)">
+            <summary>
+            Initializes a new instance of the Store class.
+            </summary>
+            <param name="key">The registry key that is the root of the configuration database.</param>
+        </member>
+        <member name="P:DiscUtils.BootConfig.Store.Objects">
+            <summary>
+            Gets the objects within the store.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.Initialize(DiscUtils.Registry.RegistryKey)">
+            <summary>
+            Initializes a new Boot Configuration Database.
+            </summary>
+            <param name="root">The registry key at the root of the database.</param>
+            <returns>The BCD store.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.GetObject(System.Guid)">
+            <summary>
+            Gets an object from the store.
+            </summary>
+            <param name="id">The identity of the object.</param>
+            <returns>The requested object, or <c>null</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.CreateObject(System.Guid,System.Int32)">
+            <summary>
+            Creates a specific object.
+            </summary>
+            <param name="id">The identity of the object to create.</param>
+            <param name="type">The object's type.</param>
+            <returns>The object representing the new application.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.CreateApplication(DiscUtils.BootConfig.ApplicationImageType,DiscUtils.BootConfig.ApplicationType)">
+            <summary>
+            Creates an application object.
+            </summary>
+            <param name="imageType">The image type of the application.</param>
+            <param name="appType">The application's type.</param>
+            <returns>The object representing the new application.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.CreateApplication(System.Guid,DiscUtils.BootConfig.ApplicationImageType,DiscUtils.BootConfig.ApplicationType)">
+            <summary>
+            Creates an application object.
+            </summary>
+            <param name="id">The identity of the object to create.</param>
+            <param name="imageType">The image type of the application.</param>
+            <param name="appType">The application's type.</param>
+            <returns>The object representing the new application.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.CreateInherit(DiscUtils.BootConfig.InheritType)">
+            <summary>
+            Creates an 'inherit' object that contains common settings.
+            </summary>
+            <param name="inheritType">The type of object the settings apply to.</param>
+            <returns>The object representing the new settings.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.CreateInherit(System.Guid,DiscUtils.BootConfig.InheritType)">
+            <summary>
+            Creates an 'inherit' object that contains common settings.
+            </summary>
+            <param name="id">The identity of the object to create.</param>
+            <param name="inheritType">The type of object the settings apply to.</param>
+            <returns>The object representing the new settings.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.CreateDevice">
+            <summary>
+            Creates a new device object, representing a partition.
+            </summary>
+            <returns>The object representing the new device.</returns>
+        </member>
+        <member name="M:DiscUtils.BootConfig.Store.RemoveObject(System.Guid)">
+            <summary>
+            Removes an object.
+            </summary>
+            <param name="id">The identity of the object to remove.</param>
+        </member>
+        <member name="T:DiscUtils.BootConfig.WellKnownElement">
+            <summary>
+            Enumeration of known BCD elements.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.None">
+            <summary>
+            Not specified.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryApplicationDevice">
+            <summary>
+            Device containing the application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryApplicationPath">
+            <summary>
+            Path to the application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDescription">
+            <summary>
+            Description of the object.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryPreferredLocale">
+            <summary>
+            Preferred locale of the object.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryInheritedObjects">
+            <summary>
+            Objects containing elements inherited by the object.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryTruncatePhysicalMemory">
+            <summary>
+            Upper bound on physical addresses used by Windows.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryRecoverySequence">
+            <summary>
+            List of objects, indicating recovery sequence.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryAutoRecoveryEnabled">
+            <summary>
+            Enables auto recovery.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryBadMemoryList">
+            <summary>
+            List of bad memory regions.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryAllowBadMemoryAccess">
+            <summary>
+            Allow use of bad memory regions.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryFirstMegaBytePolicy">
+            <summary>
+            Policy on use of first mega-byte of physical RAM.
+            </summary>
+            <remarks>0 = UseNone, 1 = UseAll, 2 = UsePrivate.</remarks>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerEnabled">
+            <summary>
+            Debugger enabled.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerType">
+            <summary>
+            Debugger type.
+            </summary>
+            <remarks>0 = Serial, 1 = 1394, 2 = USB.</remarks>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerSerialAddress">
+            <summary>
+            Debugger serial port address.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerSerialPort">
+            <summary>
+            Debugger serial port.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerSerialBaudRate">
+            <summary>
+            Debugger serial port baud rate.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebugger1394Channel">
+            <summary>
+            Debugger 1394 channel.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerUsbTargetName">
+            <summary>
+            Debugger USB target name.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerIgnoreUserModeExceptions">
+            <summary>
+            Debugger ignores user mode exceptions.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerStartPolicy">
+            <summary>
+            Debugger start policy.
+            </summary>
+            <remarks>0 = Active, 1 = AutoEnable, 2 = Disable.</remarks>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerBusParameters">
+            <summary>
+            Debugger bus parameters for KDNET.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerNetHostIp">
+            <summary>
+            Debugger host IP address for KDNET.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerNetPort">
+            <summary>
+            Debugger port for KDNET.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerNetDhcp">
+            <summary>
+            Use DHCP for KDNET?
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDebuggerNetKey">
+            <summary>
+            Debugger encryption key for KDNET.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryEmergencyManagementSystemEnabled">
+            <summary>
+            Emergency Management System enabled.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryEmergencyManagementSystemPort">
+            <summary>
+            Emergency Management System serial port.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryEmergencyManagementSystemBaudRate">
+            <summary>
+            Emergency Management System baud rate.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryLoadOptions">
+            <summary>
+            Load options.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDisplayAdvancedOptions">
+            <summary>
+            Displays advanced options.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDisplayOptionsEdit">
+            <summary>
+            Displays UI to edit advanced options.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryFveKeyRingAddress">
+            <summary>
+            FVE (Full Volume Encryption - aka BitLocker?) KeyRing address.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryBootStatusLogDevice">
+            <summary>
+            Device to contain Boot Status Log.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryBootStatusLogFile">
+            <summary>
+            Path to Boot Status Log.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryBootStatusLogAppend">
+            <summary>
+            Whether to append to the existing Boot Status Log.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryGraphicsModeDisabled">
+            <summary>
+            Disables graphics mode.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryConfigAccessPolicy">
+            <summary>
+            Configure access policy.
+            </summary>
+            <remarks>0 = default, 1 = DisallowMmConfig.</remarks>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryDisableIntegrityChecks">
+            <summary>
+            Disables integrity checks.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryAllowPrereleaseSignatures">
+            <summary>
+            Allows pre-release signatures (test signing).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryConsoleExtendedInput">
+            <summary>
+            Console extended input.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LibraryInitialConsoleInput">
+            <summary>
+            Initial console input.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrDisplayOrder">
+            <summary>
+            Application display order.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrBootSequence">
+            <summary>
+            Application boot sequence.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrDefaultObject">
+            <summary>
+            Default application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrTimeout">
+            <summary>
+            User input timeout.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrAttemptResume">
+            <summary>
+            Attempt to resume from hibernated state.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrResumeObject">
+            <summary>
+            The resume application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrToolsDisplayOrder">
+            <summary>
+            The tools display order.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrDisplayBootMenu">
+            <summary>
+            Displays the boot menu.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrNoErrorDisplay">
+            <summary>
+            No error display.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrBcdDevice">
+            <summary>
+            The BCD device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrBcdFilePath">
+            <summary>
+            The BCD file path.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.BootMgrCustomActionsList">
+            <summary>
+            The custom actions list.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderOsDevice">
+            <summary>
+            Device containing the Operating System.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderSystemRoot">
+            <summary>
+            System root on the OS device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderAssociatedResumeObject">
+            <summary>
+            The resume application associated with this OS.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderDetectKernelAndHal">
+            <summary>
+            Auto-detect the correct kernel &amp; HAL.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderKernelPath">
+            <summary>
+            The filename of the kernel.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderHalPath">
+            <summary>
+            The filename of the HAL.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderDebugTransportPath">
+            <summary>
+            The debug transport path.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderNxPolicy">
+            <summary>
+            NX (No-Execute) policy.
+            </summary>
+            <remarks>0 = OptIn, 1 = OptOut, 2 = AlwaysOff, 3 = AlwaysOn.</remarks>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderPaePolicy">
+            <summary>
+            PAE policy.
+            </summary>
+            <remarks>0 = default, 1 = ForceEnable, 2 = ForceDisable.</remarks>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderWinPeMode">
+            <summary>
+            WinPE mode.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderDisableCrashAutoReboot">
+            <summary>
+            Disable automatic reboot on OS crash.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderUseLastGoodSettings">
+            <summary>
+            Use the last known good settings.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderDisableIntegrityChecks">
+            <summary>
+            Disable integrity checks.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderAllowPrereleaseSignatures">
+            <summary>
+            Allows pre-release signatures (test signing).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderNoLowMemory">
+            <summary>
+            Loads all executables above 4GB boundary.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderRemoveMemory">
+            <summary>
+            Excludes a given amount of memory from use by Windows.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderIncreaseUserVa">
+            <summary>
+            Increases the User Mode virtual address space.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderPerformanceDataMemory">
+            <summary>
+            Size of buffer (in MB) for perfomance data logging.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderUseVgaDriver">
+            <summary>
+            Uses the VGA display driver.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderDisableBootDisplay">
+            <summary>
+            Quiet boot.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderDisableVesaBios">
+            <summary>
+            Disables use of the VESA BIOS.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderClusterModeAddressing">
+            <summary>
+            Maximum processors in a single APIC cluster.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderUsePhysicalDestination">
+            <summary>
+            Forces the physical APIC to be used.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderRestrictApicCluster">
+            <summary>
+            The largest APIC cluster number the system can use.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderUseBootProcessorOnly">
+            <summary>
+            Forces only the boot processor to be used.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderNumberOfProcessors">
+            <summary>
+            The number of processors to be used.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderForceMaxProcessors">
+            <summary>
+            Use maximum number of processors.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderProcessorConfigurationFlags">
+            <summary>
+            Processor specific configuration flags.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderUseFirmwarePciSettings">
+            <summary>
+            Uses BIOS-configured PCI resources.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderMsiPolicy">
+            <summary>
+            Message Signalled Interrupt setting.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderPciExpressPolicy">
+            <summary>
+            PCE Express Policy.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderSafeBoot">
+            <summary>
+            The safe boot option.
+            </summary>
+            <remarks>0 = Minimal, 1 = Network, 2 = DsRepair.</remarks>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderSafeBootAlternateShell">
+            <summary>
+            Loads the configured alternate shell during a safe boot.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderBootLogInitialization">
+            <summary>
+            Enables boot log.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderVerboseObjectLoadMode">
+            <summary>
+            Displays diagnostic information during boot.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderKernelDebuggerEnabled">
+            <summary>
+            Enables the kernel debugger.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderDebuggerHalBreakpoint">
+            <summary>
+            Causes the kernal to halt early during boot.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderEmsEnabled">
+            <summary>
+            Enables Windows Emergency Management System.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderForceFailure">
+            <summary>
+            Forces a failure on boot.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderDriverLoadFailurePolicy">
+            <summary>
+            The OS failure policy.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.OsLoaderBootStatusPolicy">
+            <summary>
+            The OS boot status policy.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.ResumeHiberFileDevice">
+            <summary>
+            The device containing the hibernation file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.ResumeHiberFilePath">
+            <summary>
+            The path to the hibernation file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.ResumeUseCustomSettings">
+            <summary>
+            Allows resume loader to use custom settings.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.ResumePaeMode">
+            <summary>
+            PAE settings for resume application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.ResumeAssociatedDosDevice">
+            <summary>
+            An MS-DOS device with containing resume application.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.ResumeDebugOptionEnabled">
+            <summary>
+            Enables debug option.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.MemDiagPassCount">
+            <summary>
+            The number of iterations to run.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.MemDiagTestMix">
+            <summary>
+            The test mix.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.MemDiagFailureCount">
+            <summary>
+            The failure count.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.MemDiagTestToFail">
+            <summary>
+            The tests to fail.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.LoaderBpbString">
+            <summary>
+            BPB string.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.StartupPxeSoftReboot">
+            <summary>
+            Causes a soft PXE reboot.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.StartupPxeApplicationName">
+            <summary>
+            PXE application name.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.DeviceRamDiskImageOffset">
+            <summary>
+            Offset of the RAM disk image.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.DeviceRamDiskTftpClientPort">
+            <summary>
+            Client port for TFTP.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.DeviceRamDiskSdiDevice">
+            <summary>
+            Device containing the SDI file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.DeviceRamDiskSdiPath">
+            <summary>
+            Path to the SDI file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.DeviceRamDiskRamDiskImageLength">
+            <summary>
+            Length of the RAM disk image.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.DeviceRamDiskExportAsCd">
+            <summary>
+            Exports the image as a CD.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.DeviceRamDiskTftpBlockSize">
+            <summary>
+            The TFTP transfer block size.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.SetupDeviceType">
+            <summary>
+            The device type.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.SetupAppRelativePath">
+            <summary>
+            The application relative path.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.SetupRamDiskDeviceRelativePath">
+            <summary>
+            The device relative path.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.SetupOmitOsLoaderElements">
+            <summary>
+            Omit OS loader elements.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.BootConfig.WellKnownElement.SetupRecoveryOs">
+            <summary>
+            Recovery OS flag.
+            </summary>
+        </member>
+    </members>
+</doc>

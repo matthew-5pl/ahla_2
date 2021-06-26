@@ -1,0 +1,871 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Iscsi</name>
+    </assembly>
+    <members>
+        <member name="F:DiscUtils.Iscsi.Connection._negotiatedParameters">
+            <summary>
+            The set of all 'parameters' we've negotiated.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Connection.Send(DiscUtils.Iscsi.ScsiCommand,System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends an SCSI command (aka task) to a LUN via the connected target.
+            </summary>
+            <param name="cmd">The command to send.</param>
+            <param name="outBuffer">The data to send with the command.</param>
+            <param name="outBufferOffset">The offset of the first byte to send.</param>
+            <param name="outBufferCount">The number of bytes to send, if any.</param>
+            <param name="inBuffer">The buffer to fill with returned data.</param>
+            <param name="inBufferOffset">The first byte to fill with returned data.</param>
+            <param name="inBufferMax">The maximum amount of data to receive.</param>
+            <returns>The number of bytes received.</returns>
+        </member>
+        <member name="T:DiscUtils.Iscsi.Disk">
+            <summary>
+            Represents a disk accessed via iSCSI.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Disk.BlockSize">
+            <summary>
+            Gets the size of the disk's logical blocks (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Disk.Capacity">
+            <summary>
+            The capacity of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Disk.Content">
+            <summary>
+            Gets a stream that provides access to the disk's content.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Disk.DiskClass">
+            <summary>
+            Gets the type of disk represented by this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Disk.DiskTypeInfo">
+            <summary>
+            Gets information about the type of disk.
+            </summary>
+            <remarks>This property provides access to meta-data about the disk format, for example whether the
+            BIOS geometry is preserved in the disk file.</remarks>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Disk.Geometry">
+            <summary>
+            The Geometry of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Disk.Layers">
+            <summary>
+            Gets the disk layers that constitute the disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Disk.CreateDifferencingDisk(DiscUtils.DiscFileSystem,System.String)">
+            <summary>
+            Create a new differencing disk, possibly within an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to create the disk on.</param>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Disk.CreateDifferencingDisk(System.String)">
+            <summary>
+            Create a new differencing disk.
+            </summary>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="T:DiscUtils.Iscsi.Initiator">
+            <summary>
+            Class representing an iSCSI initiator.
+            </summary>
+            <remarks>Normally, this is the first class instantiated when talking to an iSCSI Portal (i.e. network entity).
+            Create an instance and configure it, before communicating with the Target.</remarks>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Initiator.SetCredentials(System.String,System.String)">
+            <summary>
+            Sets credentials used to authenticate this Initiator to the Target.
+            </summary>
+            <param name="userName">The user name.</param>
+            <param name="password">The password, should be at least 12 characters.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Initiator.ConnectTo(DiscUtils.Iscsi.TargetInfo)">
+            <summary>
+            Connects to a Target.
+            </summary>
+            <param name="target">The Target to connect to.</param>
+            <returns>The session representing the target connection.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Initiator.ConnectTo(System.String,System.String[])">
+            <summary>
+            Connects to a Target.
+            </summary>
+            <param name="target">The Target to connect to.</param>
+            <param name="addresses">The list of addresses for the target.</param>
+            <returns>The session representing the target connection.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Initiator.ConnectTo(System.String,System.Collections.Generic.IList{DiscUtils.Iscsi.TargetAddress})">
+            <summary>
+            Connects to a Target.
+            </summary>
+            <param name="target">The Target to connect to.</param>
+            <param name="addresses">The list of addresses for the target.</param>
+            <returns>The session representing the target connection.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Initiator.GetTargets(System.String)">
+            <summary>
+            Gets the Targets available from a Portal (i.e. network entity).
+            </summary>
+            <param name="address">The address of the Portal.</param>
+            <returns>The list of Targets available.</returns>
+            <remarks>If you just have an IP address, use this method to discover the available Targets.</remarks>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Initiator.GetTargets(DiscUtils.Iscsi.TargetAddress)">
+            <summary>
+            Gets the Targets available from a Portal (i.e. network entity).
+            </summary>
+            <param name="address">The address of the Portal.</param>
+            <returns>The list of Targets available.</returns>
+            <remarks>If you just have an IP address, use this method to discover the available Targets.</remarks>
+        </member>
+        <member name="T:DiscUtils.Iscsi.InvalidProtocolException">
+            <summary>
+            Exception thrown when a low-level iSCSI failure is detected.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.InvalidProtocolException.#ctor">
+            <summary>
+            Initializes a new instance of the InvalidProtocolException class.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.InvalidProtocolException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the InvalidProtocolException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.InvalidProtocolException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the InvalidProtocolException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.InvalidProtocolException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the InvalidProtocolException class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">Ther context.</param>
+        </member>
+        <member name="T:DiscUtils.Iscsi.IscsiException">
+            <summary>
+            Base exception for any iSCSI-related failures.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.IscsiException.#ctor">
+            <summary>
+            Initializes a new instance of the IscsiException class.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.IscsiException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the IscsiException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.IscsiException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the IscsiException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.IscsiException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the IscsiException class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">Ther context.</param>
+        </member>
+        <member name="T:DiscUtils.Iscsi.LoginException">
+            <summary>
+            Exception thrown when an authentication exception occurs.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LoginException.#ctor">
+            <summary>
+            Initializes a new instance of the LoginException class.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LoginException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the LoginException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LoginException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the LoginException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LoginException.#ctor(System.String,DiscUtils.Iscsi.LoginStatusCode)">
+            <summary>
+            Initializes a new instance of the LoginException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+            <param name="code">The target-indicated reason for the exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LoginException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the LoginException class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">Ther context.</param>
+        </member>
+        <member name="T:DiscUtils.Iscsi.LoginStatusCode">
+            <summary>
+            Reasons for iSCSI login sucess or failure.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.Success">
+            <summary>
+            Login succeeded.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.TargetMovedTemporarily">
+            <summary>
+            The iSCSI target name has moved temporarily to a new address.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.TargetMovedPermanently">
+            <summary>
+            The iSCSI target name has moved permanently to a new address.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.InitiatorError">
+            <summary>
+            The Initiator was at fault.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.AuthenticationFailure">
+            <summary>
+            The Initiator could not be authenticated, or the Target doesn't support authentication.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.AuthorizationFailure">
+            <summary>
+            The Initiator is not permitted to access the given Target.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.NotFound">
+            <summary>
+            The given iSCSI Target Name was not found.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.TargetRemoved">
+            <summary>
+            The Target has been removed, and no new address provided.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.UnsupportedVersion">
+            <summary>
+            The Target does not support this version of the iSCSI protocol.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.TooManyConnections">
+            <summary>
+            Too many connections for this iSCSI session.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.MissingParameter">
+            <summary>
+            A required parameter is missing.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.CannotIncludeInSession">
+            <summary>
+            The Target does not support session spanning to this connection (address).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.SessionTypeNotSupported">
+            <summary>
+            The Target does not support this type of session (or not from this Initiator).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.SessionDoesNotExist">
+            <summary>
+            Attempt to add a connection to a non-existent session.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.InvalidDuringLogin">
+            <summary>
+            An invalid request was sent during the login sequence.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.TargetError">
+            <summary>
+            The Target suffered an unknown hardware or software failure.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.ServiceUnavailable">
+            <summary>
+            The iSCSI service or Target is not currently operational.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LoginStatusCode.OutOfResources">
+            <summary>
+            The Target is out of resources.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Iscsi.LunCapacity">
+            <summary>
+            Class representing the capacity of a LUN.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LunCapacity.#ctor(System.Int64,System.Int32)">
+            <summary>
+            Initializes a new instance of the LunCapacity class.
+            </summary>
+            <param name="logicalBlockCount">The number of logical blocks.</param>
+            <param name="blockSize">The size of each block.</param>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunCapacity.BlockSize">
+            <summary>
+            Gets the size of each logical block.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunCapacity.LogicalBlockCount">
+            <summary>
+            Gets the number of logical blocks in the LUN.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LunCapacity.ToString">
+            <summary>
+            Gets the capacity (in bytes) as a string.
+            </summary>
+            <returns>A string containing an integer.</returns>
+        </member>
+        <member name="T:DiscUtils.Iscsi.LunClass">
+            <summary>
+            The known classes of SCSI device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.BlockStorage">
+            <summary>
+            Device is block storage (i.e. normal disk).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.TapeStorage">
+            <summary>
+            Device is sequential access storage.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.Printer">
+            <summary>
+            Device is a printer.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.Processor">
+            <summary>
+            Device is a SCSI processor.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.WriteOnceStorage">
+            <summary>
+            Device is write-once storage.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.OpticalDisc">
+            <summary>
+            Device is a CD/DVD drive.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.Scanner">
+            <summary>
+            Device is a scanner (obsolete).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.OpticalMemory">
+            <summary>
+            Device is optical memory (some optical discs).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.Jukebox">
+            <summary>
+            Device is a media changer device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.Communications">
+            <summary>
+            Communications device (obsolete).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.StorageArray">
+            <summary>
+            Device is a Storage Array (e.g. RAID).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.EnclosureServices">
+            <summary>
+            Device is Enclosure Services.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.SimplifiedDirectAccess">
+            <summary>
+            Device is a simplified block device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.OpticalCard">
+            <summary>
+            Device is an optical card reader/writer device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.BridgeController">
+            <summary>
+            Device is a Bridge Controller.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.ObjectBasedStorage">
+            <summary>
+            Device is an object-based storage device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.AutomationDriveInterface">
+            <summary>
+            Device is an Automation/Drive interface.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.SecurityManager">
+            <summary>
+            Device is a Security Manager.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.WellKnown">
+            <summary>
+            Device is a well-known device, as defined by SCSI specifications.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.LunClass.Unknown">
+            <summary>
+            Unknown LUN class.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Iscsi.LunInfo">
+            <summary>
+            Provides information about an iSCSI LUN.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunInfo.DeviceType">
+            <summary>
+            Gets the type (or class) of this device.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunInfo.Lun">
+            <summary>
+            Gets the Logical Unit Number of this device.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunInfo.ProductId">
+            <summary>
+            Gets the product id (name) for this device.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunInfo.ProductRevision">
+            <summary>
+            Gets the product revision for this device.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunInfo.Removable">
+            <summary>
+            Gets a value indicating whether this Lun has removable media.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunInfo.Target">
+            <summary>
+            Gets info about the target hosting this LUN.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.LunInfo.VendorId">
+            <summary>
+            Gets the vendor id (registered name) for this device.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LunInfo.ParseUri(System.String)">
+            <summary>
+            Parses a URI referring to a LUN.
+            </summary>
+            <param name="uri">The URI to parse.</param>
+            <returns>The LUN info.</returns>
+            <remarks>
+            Note the LUN info is incomplete, only as much of the information as is encoded
+            into the URL is available.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LunInfo.ParseUri(System.Uri)">
+            <summary>
+            Parses a URI referring to a LUN.
+            </summary>
+            <param name="uri">The URI to parse.</param>
+            <returns>The LUN info.</returns>
+            <remarks>
+            Note the LUN info is incomplete, only as much of the information as is encoded
+            into the URL is available.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LunInfo.ToString">
+            <summary>
+            Gets the LUN as a string.
+            </summary>
+            <returns>The LUN in string form.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.LunInfo.GetUris">
+            <summary>
+            Gets the URIs corresponding to this LUN.
+            </summary>
+            <returns>An array of URIs as strings.</returns>
+            <remarks>Multiple URIs are returned because multiple targets may serve the same LUN.</remarks>
+        </member>
+        <member name="T:DiscUtils.Iscsi.ScsiCommandException">
+            <summary>
+            Exception thrown when a low-level iSCSI failure is detected.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.#ctor">
+            <summary>
+            Initializes a new instance of the ScsiCommandException class.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.#ctor(DiscUtils.Iscsi.ScsiStatus)">
+            <summary>
+            Initializes a new instance of the ScsiCommandException class.
+            </summary>
+            <param name="status">The SCSI status code.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the ScsiCommandException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.#ctor(DiscUtils.Iscsi.ScsiStatus,System.String)">
+            <summary>
+            Initializes a new instance of the ScsiCommandException class.
+            </summary>
+            <param name="status">The SCSI status code.</param>
+            <param name="message">The reason for the exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.#ctor(DiscUtils.Iscsi.ScsiStatus,System.String,System.Byte[])">
+            <summary>
+            Initializes a new instance of the ScsiCommandException class.
+            </summary>
+            <param name="status">The SCSI status code.</param>
+            <param name="message">The reason for the exception.</param>
+            <param name="senseData">The SCSI sense data.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the ScsiCommandException class.
+            </summary>
+            <param name="message">The reason for the exception.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.#ctor(DiscUtils.Iscsi.ScsiStatus,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the ScsiCommandException class.
+            </summary>
+            <param name="status">The SCSI status code.</param>
+            <param name="message">The reason for the exception.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the ScsiCommandException class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">Ther context.</param>
+        </member>
+        <member name="P:DiscUtils.Iscsi.ScsiCommandException.Status">
+            <summary>
+            Gets the SCSI status associated with this exception.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Gets the serialized state of this exception.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">The serialization context.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.ScsiCommandException.GetSenseData">
+            <summary>
+            Gets the SCSI sense data (if any) associated with this exception.
+            </summary>
+            <returns>The SCSI sense data, or <c>null</c>.</returns>
+        </member>
+        <member name="T:DiscUtils.Iscsi.ScsiStatus">
+            <summary>
+            Enumeration of SCSI command status codes.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.ScsiStatus.Good">
+            <summary>
+            Indicates that the command completed without error.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.ScsiStatus.CheckCondition">
+            <summary>
+            An unsupported condition occured.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.ScsiStatus.ConditionMet">
+            <summary>
+            For some commands only - indicates the specified condition was met.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.ScsiStatus.Busy">
+            <summary>
+            The device is busy.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.ScsiStatus.ReservationConflict">
+            <summary>
+            Delivered command conflicts with an existing reservation.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.ScsiStatus.TaskSetFull">
+            <summary>
+            The buffer of outstanding commands is full.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.ScsiStatus.AcaActive">
+            <summary>
+            An ACA condition exists.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.ScsiStatus.TaskAborted">
+            <summary>
+            The command was aborted.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Iscsi.Session">
+            <summary>
+            Represents a connection to a particular Target.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Iscsi.Session._negotiatedParameters">
+            <summary>
+            The set of all 'parameters' we've negotiated.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.Dispose">
+            <summary>
+            Disposes of this instance, closing the session with the Target.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.EnumerateTargets">
+            <summary>
+            Enumerates all of the Targets.
+            </summary>
+            <returns>The list of Targets.</returns>
+            <remarks>In practice, for an established session, this just returns details of
+            the connected Target.</remarks>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.GetLuns">
+            <summary>
+            Gets information about the LUNs available from the Target.
+            </summary>
+            <returns>The LUNs available.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.GetBlockDeviceLuns">
+            <summary>
+            Gets all the block-device LUNs available from the Target.
+            </summary>
+            <returns>The block-device LUNs.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.GetInfo(System.Int64)">
+            <summary>
+            Gets information about a particular LUN.
+            </summary>
+            <param name="lun">The LUN to query.</param>
+            <returns>Information about the LUN.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.GetCapacity(System.Int64)">
+            <summary>
+            Gets the capacity of a particular LUN.
+            </summary>
+            <param name="lun">The LUN to query.</param>
+            <returns>The LUN's capacity.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.OpenDisk(System.Int64)">
+            <summary>
+            Provides read-write access to a LUN as a VirtualDisk.
+            </summary>
+            <param name="lun">The LUN to access.</param>
+            <returns>The new VirtualDisk instance.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.OpenDisk(System.Int64,System.IO.FileAccess)">
+            <summary>
+            Provides access to a LUN as a VirtualDisk.
+            </summary>
+            <param name="lun">The LUN to access.</param>
+            <param name="access">The type of access desired.</param>
+            <returns>The new VirtualDisk instance.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.Read(System.Int64,System.Int64,System.Int16,System.Byte[],System.Int32)">
+            <summary>
+            Reads some data from a LUN.
+            </summary>
+            <param name="lun">The LUN to read from.</param>
+            <param name="startBlock">The first block to read.</param>
+            <param name="blockCount">The number of blocks to read.</param>
+            <param name="buffer">The buffer to fill.</param>
+            <param name="offset">The offset of the first byte to fill.</param>
+            <returns>The number of bytes read.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.Write(System.Int64,System.Int64,System.Int16,System.Int32,System.Byte[],System.Int32)">
+            <summary>
+            Writes some data to a LUN.
+            </summary>
+            <param name="lun">The LUN to write to.</param>
+            <param name="startBlock">The first block to write.</param>
+            <param name="blockCount">The number of blocks to write.</param>
+            <param name="blockSize">The size of each block (must match the actual LUN geometry).</param>
+            <param name="buffer">The data to write.</param>
+            <param name="offset">The offset of the first byte to write in buffer.</param>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.RawCommand(System.Int64,System.Byte[],System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Performs a raw SCSI command.
+            </summary>
+            <param name="lun">The target LUN for the command.</param>
+            <param name="command">The command (a SCSI Command Descriptor Block, aka CDB).</param>
+            <param name="outBuffer">Buffer of data to send with the command (or <c>null</c>).</param>
+            <param name="outBufferOffset">Offset of first byte of data to send with the command.</param>
+            <param name="outBufferLength">Amount of data to send with the command.</param>
+            <param name="inBuffer">Buffer to receive data from the command (or <c>null</c>).</param>
+            <param name="inBufferOffset">Offset of the first byte position to fill with received data.</param>
+            <param name="inBufferLength">The expected amount of data to receive.</param>
+            <returns>The number of bytes of data received.</returns>
+            <remarks>
+            <para>This method permits the caller to send raw SCSI commands to a LUN.</para>
+            <para>The command .</para>
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Session.TargetName">
+            <summary>
+            Gets the name of the iSCSI target this session is connected to.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Session.InitiatorName">
+            <summary>
+            Gets the name of the iSCSI initiator seen by the target for this session.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.Session.TargetAlias">
+            <summary>
+            Gets the friendly name of the iSCSI target this session is connected to.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.Session.Send(DiscUtils.Iscsi.ScsiCommand,System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends an SCSI command (aka task) to a LUN via the connected target.
+            </summary>
+            <param name="cmd">The command to send.</param>
+            <param name="outBuffer">The data to send with the command.</param>
+            <param name="outBufferOffset">The offset of the first byte to send.</param>
+            <param name="outBufferCount">The number of bytes to send, if any.</param>
+            <param name="inBuffer">The buffer to fill with returned data.</param>
+            <param name="inBufferOffset">The first byte to fill with returned data.</param>
+            <param name="inBufferMax">The maximum amount of data to receive.</param>
+            <returns>The number of bytes received.</returns>
+        </member>
+        <member name="T:DiscUtils.Iscsi.TargetAddress">
+            <summary>
+            Information about an iSCSI Target.
+            </summary>
+            <remarks>
+            A target contains zero or more LUNs.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Iscsi.TargetAddress.#ctor(System.String,System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the TargetAddress class.
+            </summary>
+            <param name="address">The IP address (or FQDN) of the Target.</param>
+            <param name="port">The network port of the Target.</param>
+            <param name="targetGroupTag">The Group Tag of the Target.</param>
+        </member>
+        <member name="P:DiscUtils.Iscsi.TargetAddress.NetworkAddress">
+            <summary>
+            Gets the IP address (or FQDN) of the Target.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.TargetAddress.NetworkPort">
+            <summary>
+            Gets the network port of the Target.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.TargetAddress.TargetGroupTag">
+            <summary>
+            Gets the Group Tag of the Target.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.TargetAddress.Parse(System.String)">
+            <summary>
+            Parses a Target address in string form.
+            </summary>
+            <param name="address">The address to parse.</param>
+            <returns>The structured address.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.TargetAddress.ToString">
+            <summary>
+            Gets the TargetAddress in string format.
+            </summary>
+            <returns>The string in 'host:port,targetgroup' format.</returns>
+        </member>
+        <member name="M:DiscUtils.Iscsi.TargetAddress.ToUri">
+            <summary>
+            Gets the target address as a URI.
+            </summary>
+            <returns>The target address in the form: iscsi://host[:port][/grouptag].</returns>
+        </member>
+        <member name="T:DiscUtils.Iscsi.TargetInfo">
+            <summary>
+            Information about an iSCSI Target.
+            </summary>
+            <remarks>
+            A target contains zero or more LUNs.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Iscsi.TargetInfo.#ctor(System.String,DiscUtils.Iscsi.TargetAddress[])">
+            <summary>
+            Initializes a new instance of the TargetInfo class.
+            </summary>
+            <param name="name">The name of the Target.</param>
+            <param name="addresses">The network addresses of the Target.</param>
+        </member>
+        <member name="P:DiscUtils.Iscsi.TargetInfo.Addresses">
+            <summary>
+            Gets the network addresses of the Target.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Iscsi.TargetInfo.Name">
+            <summary>
+            Gets the name of the Target.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Iscsi.TargetInfo.ToString">
+            <summary>
+            Gets the primary address of the Target as a string.
+            </summary>
+            <returns>String of the form host[:port][,group]/name.</returns>
+        </member>
+    </members>
+</doc>

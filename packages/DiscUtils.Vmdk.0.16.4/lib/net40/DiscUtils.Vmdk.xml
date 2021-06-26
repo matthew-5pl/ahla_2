@@ -1,0 +1,679 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Vmdk</name>
+    </assembly>
+    <members>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._atEof">
+            <summary>
+            Indicator to whether end-of-stream has been reached.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._currentGrainTable">
+            <summary>
+            The current grain that's loaded into _grainTable.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._diskOffset">
+            <summary>
+            Offset of this extent within the disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._fileStream">
+            <summary>
+            Stream containing the sparse extent.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._globalDirectory">
+            <summary>
+            The Global Directory for this extent.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._grainTable">
+            <summary>
+            The data corresponding to the current grain (or null).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._grainTableCache">
+            <summary>
+            Cache of recently used grain tables.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._gtCoverage">
+            <summary>
+            The number of bytes controlled by a single grain table.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._header">
+            <summary>
+            The header from the start of the extent.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._ownsFileStream">
+            <summary>
+            Indicates if this object controls the lifetime of _fileStream.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._ownsParentDiskStream">
+            <summary>
+            Indicates if this object controls the lifetime of _parentDiskStream.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._parentDiskStream">
+            <summary>
+            The stream containing the unstored bytes.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._position">
+            <summary>
+            Current position in the extent.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.CommonSparseExtentStream._redundantGlobalDirectory">
+            <summary>
+            The Redundant Global Directory for this extent.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vmdk.Disk">
+            <summary>
+            Represents a VMDK-backed disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.Disk._content">
+            <summary>
+            The stream representing the content of this disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.Disk._files">
+            <summary>
+            The list of files that make up the disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.#ctor(System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.
+            </summary>
+            <param name="path">The path to the disk.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.#ctor(DiscUtils.DiscFileSystem,System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.
+            </summary>
+            <param name="fileSystem">The file system containing the disk.</param>
+            <param name="path">The file system relative path to the disk.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.  Only monolithic sparse streams are supported.
+            </summary>
+            <param name="stream">The stream containing the VMDK file.</param>
+            <param name="ownsStream">Indicates if the new instances owns the stream.</param>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.BiosGeometry">
+            <summary>
+            Gets the geometry of the disk as it is anticipated a hypervisor BIOS will represent it.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.Capacity">
+            <summary>
+            Gets the capacity of this disk (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.Content">
+            <summary>
+            Gets the contents of this disk as a stream.
+            </summary>
+            <remarks>Note the returned stream is not guaranteed to be at any particular position.  The actual position
+            will depend on the last partition table/file system activity, since all access to the disk contents pass
+            through a single stream instance.  Set the stream position before accessing the stream.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.DiskClass">
+            <summary>
+            Gets the type of disk represented by this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.DiskTypeInfo">
+            <summary>
+            Gets information about the type of disk.
+            </summary>
+            <remarks>This property provides access to meta-data about the disk format, for example whether the
+            BIOS geometry is preserved in the disk file.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.Geometry">
+            <summary>
+            Gets the Geometry of this disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.Layers">
+            <summary>
+            Gets the layers that make up the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.Links">
+            <summary>
+            Gets the links that make up the disk (type-safe version of Layers).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.Disk.Parameters">
+            <summary>
+            Gets the parameters of the disk.
+            </summary>
+            <remarks>Most of the parameters are also available individually, such as DiskType and Capacity.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.Initialize(System.String,DiscUtils.Vmdk.DiskParameters)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="parameters">The desired parameters for the new disk.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.Initialize(System.String,System.Int64,DiscUtils.Vmdk.DiskCreateType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="type">The type of virtual disk to create.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.Initialize(System.String,System.Int64,DiscUtils.Geometry,DiscUtils.Vmdk.DiskCreateType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <param name="type">The type of virtual disk to create.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.Initialize(DiscUtils.DiscFileSystem,System.String,System.Int64,DiscUtils.Vmdk.DiskCreateType)">
+            <summary>
+            Creates a new virtual disk at the specified location on a file system.
+            </summary>
+            <param name="fileSystem">The file system to contain the disk.</param>
+            <param name="path">The file system path to the disk.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="type">The type of virtual disk to create.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.Initialize(System.String,System.Int64,DiscUtils.Vmdk.DiskCreateType,DiscUtils.Vmdk.DiskAdapterType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="type">The type of virtual disk to create.</param>
+            <param name="adapterType">The type of virtual disk adapter.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.Initialize(System.String,System.Int64,DiscUtils.Geometry,DiscUtils.Vmdk.DiskCreateType,DiscUtils.Vmdk.DiskAdapterType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <param name="type">The type of virtual disk to create.</param>
+            <param name="adapterType">The type of virtual disk adapter.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.Initialize(DiscUtils.DiscFileSystem,System.String,System.Int64,DiscUtils.Vmdk.DiskCreateType,DiscUtils.Vmdk.DiskAdapterType)">
+            <summary>
+            Creates a new virtual disk at the specified location on a file system.
+            </summary>
+            <param name="fileSystem">The file system to contain the disk.</param>
+            <param name="path">The file system path to the disk.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="type">The type of virtual disk to create.</param>
+            <param name="adapterType">The type of virtual disk adapter.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.InitializeDifferencing(System.String,DiscUtils.Vmdk.DiskCreateType,System.String)">
+            <summary>
+            Creates a new virtual disk as a thin clone of an existing disk.
+            </summary>
+            <param name="path">The path to the new disk.</param>
+            <param name="type">The type of disk to create.</param>
+            <param name="parentPath">The path to the parent disk.</param>
+            <returns>The new disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.InitializeDifferencing(DiscUtils.DiscFileSystem,System.String,DiscUtils.Vmdk.DiskCreateType,System.String)">
+            <summary>
+            Creates a new virtual disk as a thin clone of an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to contain the disk.</param>
+            <param name="path">The path to the new disk.</param>
+            <param name="type">The type of disk to create.</param>
+            <param name="parentPath">The path to the parent disk.</param>
+            <returns>The new disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.CreateDifferencingDisk(DiscUtils.DiscFileSystem,System.String)">
+            <summary>
+            Create a new differencing disk, possibly within an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to create the disk on.</param>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.CreateDifferencingDisk(System.String)">
+            <summary>
+            Create a new differencing disk.
+            </summary>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.Disk.Dispose(System.Boolean)">
+            <summary>
+            Disposes of this instance.
+            </summary>
+            <param name="disposing"><c>true</c> if disposing, <c>false</c> if in destructor.</param>
+        </member>
+        <member name="T:DiscUtils.Vmdk.DiskAdapterType">
+            <summary>
+            Enumeration of known virtual disk controller (aka adapter) types.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskAdapterType.None">
+            <summary>
+            Unknown or unspecified.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskAdapterType.Ide">
+            <summary>
+            IDE controller.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskAdapterType.BusLogicScsi">
+            <summary>
+            Bus Logic SCSI controller.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskAdapterType.LsiLogicScsi">
+            <summary>
+            LSI Logic SCSI controller.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskAdapterType.LegacyEsx">
+            <summary>
+            Legacy ESX controller.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vmdk.DiskBuilder">
+            <summary>
+            Creates new VMDK disks by wrapping existing streams.
+            </summary>
+            <remarks>Using this method for creating virtual disks avoids consuming
+            large amounts of memory, or going via the local file system when the aim
+            is simply to present a VMDK version of an existing disk.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the DiskBuilder class.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskBuilder.AdapterType">
+            <summary>
+            Gets or sets the specific VMware disk adapter type to embed in the VMDK.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskBuilder.DiskType">
+            <summary>
+            Gets or sets the type of VMDK disk file required.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskBuilder.GenericAdapterType">
+            <summary>
+            Gets or sets the adaptor type for created virtual disk, setting to SCSI implies LSI logic adapter.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskBuilder.PreservesBiosGeometry">
+            <summary>
+            Gets whether this file format preserves BIOS geometry information.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskBuilder.Build(System.String)">
+            <summary>
+            Initiates the build process.
+            </summary>
+            <param name="baseName">The base name for the VMDK, for example 'foo' to create 'foo.vmdk'.</param>
+            <returns>A set of one or more logical files that constitute the VMDK.  The first file is
+            the 'primary' file that is normally attached to VMs.</returns>
+        </member>
+        <member name="T:DiscUtils.Vmdk.DiskCreateType">
+            <summary>
+            Enumeration of VMDK disk types.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.None">
+            <summary>
+            None - do not use.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.MonolithicSparse">
+            <summary>
+            VMware Workstation single-file dynamic disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.VmfsSparse">
+            <summary>
+            ESX Dynamic Disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.MonolithicFlat">
+            <summary>
+            VMware Workstation single-extent pre-allocated disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.Vmfs">
+            <summary>
+            ESX pre-allocated disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.TwoGbMaxExtentSparse">
+            <summary>
+            VMware Workstation multi-extent dynamic disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.TwoGbMaxExtentFlat">
+            <summary>
+            VMware Workstation multi-extent pre-allocated disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.FullDevice">
+            <summary>
+            Full device disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.VmfsRaw">
+            <summary>
+            ESX raw disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.PartitionedDevice">
+            <summary>
+            Partition disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.VmfsRawDeviceMap">
+            <summary>
+            ESX RDM disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.VmfsPassthroughRawDeviceMap">
+            <summary>
+            ESX Passthrough RDM disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.StreamOptimized">
+            <summary>
+            A streaming-optimized disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.SeSparse">
+            <summary>
+            ESX SeSparse disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskCreateType.VsanSparse">
+            <summary>
+            ESX VsanSparse disk.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vmdk.DiskImageFile">
+            <summary>
+            Represents a single VMDK file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskImageFile._monolithicStream">
+            <summary>
+            The stream containing the VMDK disk, if this is a monolithic disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vmdk.DiskImageFile._ownsMonolithicStream">
+            <summary>
+            Indicates if this instance controls lifetime of _monolithicStream.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.#ctor(System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="path">The path to the disk.</param>
+            <param name="access">The desired access to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="stream">The stream containing a monolithic disk.</param>
+            <param name="ownsStream">Indicates if the created instance should own the stream.</param>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.#ctor(DiscUtils.FileLocator,System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="fileLocator">An object to open the file and any extents.</param>
+            <param name="file">The file name.</param>
+            <param name="access">The type of access desired.</param>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.AdapterType">
+            <summary>
+            Gets the IDE/SCSI adapter type of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.BiosGeometry">
+            <summary>
+            Gets the BIOS geometry of this disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.Capacity">
+            <summary>
+            Gets the capacity of this disk (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.CreateType">
+            <summary>
+            Gets the 'CreateType' of this disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.ExtentPaths">
+            <summary>
+            Gets the relative paths to all of the disk's extents.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.Extents">
+            <summary>
+            Gets the extents that comprise this file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.Geometry">
+            <summary>
+            Gets the Geometry of this disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.IsSparse">
+            <summary>
+            Gets an indication as to whether the disk file is sparse.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.NeedsParent">
+            <summary>
+            Gets a value indicating whether this disk is a linked differencing disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskImageFile.RelativeFileLocator">
+            <summary>
+            Gets a <c>FileLocator</c> that can resolve relative paths, or <c>null</c>.
+            </summary>
+            <remarks>
+            Typically used to locate parent disks.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Initialize(System.String,DiscUtils.Vmdk.DiskParameters)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="parameters">The desired parameters for the new disk.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Initialize(DiscUtils.DiscFileSystem,System.String,DiscUtils.Vmdk.DiskParameters)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="fileSystem">The file system to create the disk on.</param>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="parameters">The desired parameters for the new disk.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Initialize(System.String,System.Int64,DiscUtils.Vmdk.DiskCreateType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="type">The type of virtual disk to create.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Initialize(System.String,System.Int64,DiscUtils.Geometry,DiscUtils.Vmdk.DiskCreateType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <param name="createType">The type of virtual disk to create.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Initialize(System.String,System.Int64,DiscUtils.Geometry,DiscUtils.Vmdk.DiskCreateType,DiscUtils.Vmdk.DiskAdapterType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <param name="createType">The type of virtual disk to create.</param>
+            <param name="adapterType">The type of disk adapter used with the disk.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Initialize(DiscUtils.DiscFileSystem,System.String,System.Int64,DiscUtils.Vmdk.DiskCreateType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="fileSystem">The file system to create the VMDK on.</param>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="createType">The type of virtual disk to create.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Initialize(DiscUtils.DiscFileSystem,System.String,System.Int64,DiscUtils.Vmdk.DiskCreateType,DiscUtils.Vmdk.DiskAdapterType)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="fileSystem">The file system to create the VMDK on.</param>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="createType">The type of virtual disk to create.</param>
+            <param name="adapterType">The type of disk adapter used with the disk.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.InitializeDifferencing(System.String,DiscUtils.Vmdk.DiskCreateType,System.String)">
+            <summary>
+            Creates a new virtual disk that is a linked clone of an existing disk.
+            </summary>
+            <param name="path">The path to the new disk.</param>
+            <param name="type">The type of the new disk.</param>
+            <param name="parent">The disk to clone.</param>
+            <returns>The new virtual disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.InitializeDifferencing(DiscUtils.DiscFileSystem,System.String,DiscUtils.Vmdk.DiskCreateType,System.String)">
+            <summary>
+            Creates a new virtual disk that is a linked clone of an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to create the VMDK on.</param>
+            <param name="path">The path to the new disk.</param>
+            <param name="type">The type of the new disk.</param>
+            <param name="parent">The disk to clone.</param>
+            <returns>The new virtual disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.OpenContent(DiscUtils.Streams.SparseStream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Gets the contents of this disk as a stream.
+            </summary>
+            <param name="parent">The content of the parent disk (needed if this is a differencing disk).</param>
+            <param name="ownsParent">A value indicating whether ownership of the parent stream is transfered.</param>
+            <returns>The stream containing the disk contents.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.GetParentLocations">
+            <summary>
+            Gets the location of the parent.
+            </summary>
+            <returns>The parent locations as an array.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Initialize(DiscUtils.FileLocator,System.String,DiscUtils.Vmdk.DiskParameters)">
+            <summary>
+            Creates a new virtual disk at the specified path.
+            </summary>
+            <param name="fileLocator">The object used to locate / create the component files.</param>
+            <param name="path">The name of the VMDK to create.</param>
+            <param name="parameters">The desired parameters for the new disk.</param>
+            <returns>The newly created disk image.</returns>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskImageFile.Dispose(System.Boolean)">
+            <summary>
+            Disposes of this instance.
+            </summary>
+            <param name="disposing"><c>true</c> if disposing, <c>false</c> if in destructor.</param>
+        </member>
+        <member name="T:DiscUtils.Vmdk.DiskParameters">
+            <summary>
+            The parameters used to create a new VMDK file.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskParameters.#ctor">
+            <summary>
+            Initializes a new instance of the DiskParameters class with default values.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vmdk.DiskParameters.#ctor(DiscUtils.VirtualDiskParameters)">
+            <summary>
+            Initializes a new instance of the DiskParameters class with generic parameters.
+            </summary>
+            <param name="genericParameters">The generic parameters to copy.</param>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskParameters.AdapterType">
+            <summary>
+            Gets or sets the type of emulated disk adapter.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskParameters.BiosGeometry">
+            <summary>
+            Gets or sets the BIOS Geometry of the virtual disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskParameters.Capacity">
+            <summary>
+            Gets or sets the capacity of the virtual disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskParameters.CreateType">
+            <summary>
+            Gets or sets the type of VMDK file to create.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vmdk.DiskParameters.Geometry">
+            <summary>
+            Gets or sets the Physical Geometry of the virtual disk.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vmdk.HostedSparseExtentStream">
+            <summary>
+            Represents and extent from a sparse disk from 'hosted' software (VMware Workstation, etc).
+            </summary>
+            <remarks>Hosted disks and server disks (ESX, etc) are subtly different formats.</remarks>
+        </member>
+    </members>
+</doc>

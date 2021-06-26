@@ -1,0 +1,1058 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Xfs</name>
+    </assembly>
+    <members>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.Magic">
+            <summary>
+            Specifies the magic number for the AGF sector: "XAGF" (0x58414746).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.Version">
+            <summary>
+            Set to XFS_AGF_VERSION which is currently 1.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.SequenceNumber">
+            <summary>
+            Specifies the AG number for the sector.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.Length">
+            <summary>
+            Specifies the size of the AG in filesystem blocks. For all AGs except the last, this must be equal
+            to the superblock's <see cref="P:DiscUtils.Xfs.SuperBlock.AgBlocks"/> value. For the last AG, this could be less than the
+            <see cref="P:DiscUtils.Xfs.SuperBlock.AgBlocks"/> value. It is this value that should be used to determine the size of the AG.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.RootBlockNumbers">
+            <summary>
+            Specifies the block number for the root of the two free space B+trees.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.Levels">
+            <summary>
+            Specifies the level or depth of the two free space B+trees. For a fresh AG, this will be one, and
+            the "roots" will point to a single leaf of level 0.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.FreeListFirst">
+            <summary>
+            Specifies the index of the first "free list" block.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.FreeListLast">
+            <summary>
+            Specifies the index of the last "free list" block.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.FreeListCount">
+            <summary>
+            Specifies the number of blocks in the "free list".
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.FreeBlocks">
+            <summary>
+            Specifies the current number of free blocks in the AG.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.Longest">
+            <summary>
+            Specifies the number of blocks of longest contiguous free space in the AG.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.BTreeBlocks">
+            <summary>
+            Specifies the number of blocks used for the free space B+trees. This is only used if the
+            XFS_SB_VERSION2_LAZYSBCOUNTBIT bit is set in <see cref="P:DiscUtils.Xfs.SuperBlock.Features2"/>.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.FreeSpaceOffset">
+            <summary>
+            stores a sorted array of block offset and block counts in the leaves of the B+tree, sorted by the offset
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.FreeSpaceCount">
+            <summary>
+            stores a sorted array of block offset and block counts in the leaves of the B+tree, sorted by the count or size
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupFreeBlockInfo.Lsn">
+            <summary>
+            last write sequence
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.Magic">
+            <summary>
+            Specifies the magic number for the AGI sector: "XAGI" (0x58414749)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.Version">
+            <summary>
+            Set to XFS_AGI_VERSION which is currently 1.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.SequenceNumber">
+            <summary>
+            Specifies the AG number for the sector.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.Length">
+            <summary>
+            Specifies the size of the AG in filesystem blocks.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.Count">
+            <summary>
+            Specifies the number of inodes allocated for the AG.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.Root">
+            <summary>
+            Specifies the block number in the AG containing the root of the inode B+tree.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.Level">
+            <summary>
+            Specifies the number of levels in the inode B+tree.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.FreeCount">
+            <summary>
+            Specifies the number of free inodes in the AG.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.NewInode">
+            <summary>
+            Specifies AG relative inode number most recently allocated.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.DirInode">
+            <summary>
+            Deprecated and not used, it's always set to NULL (-1).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.Unlinked">
+            <summary>
+            Hash table of unlinked (deleted) inodes that are still being referenced.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.RootInodeBtree">
+            <summary>
+            root of the inode B+tree
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.AllocationGroupInodeBtreeInfo.Lsn">
+            <summary>
+            last write sequence
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xfs.BlockDirectoryDataEntry.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.BTreeExtentLeaf.LoadBtree(DiscUtils.Xfs.Context)">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.BTreeExtentLeaf.GetExtents">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.BTreeExtentLeafV5.LoadBtree(DiscUtils.Xfs.Context)">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.BTreeExtentLeafV5.GetExtents">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.BTreeExtentNode.GetExtents">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.BTreeExtentNodeV5.GetExtents">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.BTreeExtentRoot.WriteTo(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:DiscUtils.Xfs.BtreeHeader.Bno">
+            <summary>
+            location on disk
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.BtreeHeader.Lsn">
+            <summary>
+            last write sequence
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.BTreeInodeRecord.StartInode">
+            <summary>
+            specifies the starting inode number for the chunk
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.BTreeInodeRecord.FreeCount">
+            <summary>
+            specifies the number of free entries in the chuck
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.BTreeInodeRecord.Free">
+            <summary>
+            64 element bit array specifying which entries are free in the chunk
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Xfs.DirectoryFType">
+            <summary>
+            Inode type
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.DirectoryFType.File">
+            <summary>
+            Entry points to a file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.DirectoryFType.Directory">
+            <summary>
+            Entry points to another directory.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.DirectoryFType.CharDevice">
+            <summary>
+            Entry points to a character device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.DirectoryFType.BlockDevice">
+            <summary>
+            Entry points to a block device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.DirectoryFType.Fifo">
+            <summary>
+            Entry points to a FIFO.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.DirectoryFType.Socket">
+            <summary>
+            Entry points to a socket.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.DirectoryFType.Symlink">
+            <summary>
+            Entry points to a symbolic link.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.DirectoryFType.Whiteout">
+            <summary>
+            Entry points to an overlayfs whiteout file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Extent.BlockCount">
+            <summary>
+            Number of Blocks
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xfs.Extent.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.ExtentStream.#ctor(System.Int64,System.Collections.Generic.List{DiscUtils.Streams.BuilderExtent})">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.ExtentStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="T:DiscUtils.Xfs.IncompatibleFeatures">
+            <summary>
+            Read-write incompatible feature flags.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.IncompatibleFeatures.FType">
+            <summary>
+            Directory file type. Each directory entry tracks the
+            type of the inode to which the entry points. This is a
+            performance optimization to remove the need to
+            load every inode into memory to iterate a directory.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.IncompatibleFeatures.SparseInodes">
+            <summary>
+            Sparse inodes. This feature relaxes the requirement
+            to allocate inodes in chunks of 64. When the free
+            space is heavily fragmented, there might exist plenty
+            of free space but not enough contiguous free space to
+            allocate a new inode chunk. With this feature, the
+            user can continue to create files until all free space is
+            exhausted.
+            Unused space in the inode B+tree records are used to
+            track which parts of the inode chunk are not inodes.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.IncompatibleFeatures.MetaUUID">
+            <summary>
+            Metadata UUID. The UUID stamped into each
+            metadata block must match the value in
+            sb_meta_uuid. This enables the administrator to
+            change sb_uuid at will without having to rewrite
+            the entire filesystem.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Magic">
+            <summary>
+            The inode signature where these two bytes are 0x494e, or "IN" in ASCII.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Mode">
+            <summary>
+            Specifies the mode access bits and type of file using the standard S_Ixxx values defined in stat.h.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Version">
+            <summary>
+            Specifies the inode version which currently can only be 1 or 2. The inode version specifies the
+            usage of the di_onlink, di_nlink and di_projid values in the inode core.Initially, inodes
+            are created as v1 but can be converted on the fly to v2 when required.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Format">
+            <summary>
+            Specifies the format of the data fork in conjunction with the di_mode type. This can be one of
+            several values. For directories and links, it can be "local" where all metadata associated with the
+            file is within the inode, "extents" where the inode contains an array of extents to other filesystem
+            blocks which contain the associated metadata or data or "btree" where the inode contains a
+            B+tree root node which points to filesystem blocks containing the metadata or data. Migration
+            between the formats depends on the amount of metadata associated with the inode. "dev" is
+            used for character and block devices while "uuid" is currently not used.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Onlink">
+            <summary>
+            In v1 inodes, this specifies the number of links to the inode from directories. When the number
+            exceeds 65535, the inode is converted to v2 and the link count is stored in di_nlink.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.UserId">
+            <summary>
+            Specifies the owner's UID of the inode.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.GroupId">
+            <summary>
+            Specifies the owner's GID of the inode.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Nlink">
+            <summary>
+            Specifies the number of links to the inode from directories. This is maintained for both inode
+            versions for current versions of XFS.Old versions of XFS did not support v2 inodes, and
+            therefore this value was never updated and was classed as reserved space (part of <see cref="P:DiscUtils.Xfs.Inode.Padding"/>).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.ProjectId">
+            <summary>
+            Specifies the owner's project ID in v2 inodes. An inode is converted to v2 if the project ID is set.
+            This value must be zero for v1 inodes.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Padding">
+            <summary>
+            Reserved, must be zero.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.FlushIterator">
+            <summary>
+            Incremented on flush.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.AccessTime">
+            <summary>
+            Specifies the last access time of the files using UNIX time conventions the following structure.
+            This value maybe undefined if the filesystem is mounted with the "noatime" option.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.ModificationTime">
+            <summary>
+            Specifies the last time the file was modified.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.CreationTime">
+            <summary>
+            Specifies when the inode's status was last changed.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Length">
+            <summary>
+            Specifies the EOF of the inode in bytes. This can be larger or smaller than the extent space
+            (therefore actual disk space) used for the inode.For regular files, this is the filesize in bytes,
+            directories, the space taken by directory entries and for links, the length of the symlink.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.BlockCount">
+            <summary>
+            Specifies the number of filesystem blocks used to store the inode's data including relevant
+            metadata like B+trees.This does not include blocks used for extended attributes.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.ExtentSize">
+            <summary>
+            Specifies the extent size for filesystems with real-time devices and an extent size hint for
+            standard filesystems. For normal filesystems, and with directories, the
+            XFS_DIFLAG_EXTSZINHERIT flag must be set in di_flags if this field is used.Inodes
+            created in these directories will inherit the di_extsize value and have
+            XFS_DIFLAG_EXTSIZE set in their di_flags. When a file is written to beyond allocated
+            space, XFS will attempt to allocate additional disk space based on this value.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Extents">
+            <summary>
+            Specifies the number of data extents associated with this inode.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.AttributeExtents">
+            <summary>
+            Specifies the number of extended attribute extents associated with this inode.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Forkoff">
+            <summary>
+            Specifies the offset into the inode's literal area where the extended attribute fork starts. This is
+            an 8-bit value that is multiplied by 8 to determine the actual offset in bytes(ie.attribute data is
+            64-bit aligned). This also limits the maximum size of the inode to 2048 bytes.This value is
+            initially zero until an extended attribute is created.When in attribute is added, the nature of
+            di_forkoff depends on the XFS_SB_VERSION2_ATTR2BIT flag in the superblock.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.AttributeFormat">
+            <summary>
+            Specifies the format of the attribute fork. This uses the same values as di_format, but
+            restricted to "local", "extents" and "btree" formats for extended attribute data.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.DmApiEventMask">
+            <summary>
+            DMAPI event mask.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.DmState">
+            <summary>
+            DMAPI state.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Flags">
+            <summary>
+            Specifies flags associated with the inode.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.Inode.Generation">
+            <summary>
+            A generation number used for inode identification. This is used by tools that do inode scanning
+            such as backup tools and xfsdump. An inode's generation number can change by unlinking and
+            creating a new file that reuses the inode.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.Realtime">
+            <summary>
+            The inode's data is located on the real-time device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.Prealloc">
+            <summary>
+            The inode's extents have been preallocated.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.NewRtBitmap">
+            <summary>
+            Specifies the sb_rbmino uses the new real-time bitmap format
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.Immutable">
+            <summary>
+            Specifies the inode cannot be modified.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.Append">
+            <summary>
+            The inode is in append only mode.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.Sync">
+            <summary>
+            The inode is written synchronously.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.NoAtime">
+            <summary>
+            The inode's di_atime is not updated.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.NoDump">
+            <summary>
+            Specifies the inode is to be ignored by xfsdump.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.RtInherit">
+            <summary>
+            For directory inodes, new inodes inherit the XFS_DIFLAG_REALTIME bit.
+             </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.ProjInherit">
+            <summary>
+            For directory inodes, new inodes inherit the <see cref="P:DiscUtils.Xfs.Inode.ProjectId"/> value.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.NoSymlinks">
+            <summary>
+            For directory inodes, symlinks cannot be created.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.ExtentSize">
+            <summary>
+            Specifies the extent size for real-time files or a and extent size hint for regular files.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.ExtentSizeInherit">
+            <summary>
+            For directory inodes, new inodes inherit the <see cref="P:DiscUtils.Xfs.Inode.ExtentSize"/> value.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.NoDefrag">
+            <summary>
+            Specifies the inode is to be ignored when defragmenting the filesystem.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFlags.Filestream">
+            <summary>
+            use filestream allocator
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFormat.Dev">
+            <summary>
+            character and block devices
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFormat.Local">
+            <summary>
+            all metadata associated with the file is within the inode
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFormat.Extents">
+            <summary>
+            the inode contains an array of extents to other filesystem blocks which contain the associated metadata or data
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFormat.Btree">
+            <summary>
+            the inode contains a B+tree root node which points to filesystem blocks containing the metadata or data 
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.InodeFormat.Uuid">
+            <summary>
+            currently not used
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Xfs.ReadOnlyCompatibleFeatures">
+            <summary>
+            Feature flags for features backwards compatible with read-only mounting.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.ReadOnlyCompatibleFeatures.FINOBT">
+            <summary>
+            Free inode B+tree. Each allocation group contains a
+            B+tree to track inode chunks containing free inodes.
+            This is a performance optimization to reduce the
+            time required to allocate inodes.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.ReadOnlyCompatibleFeatures.RMAPBT">
+            <summary>
+            Reverse mapping B+tree. Each allocation group
+            contains a B+tree containing records mapping AG
+            blocks to their owners.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.ReadOnlyCompatibleFeatures.REFLINK">
+            <summary>
+            Reference count B+tree. Each allocation group
+            contains a B+tree to track the reference counts of AG
+            blocks. This enables files to share data blocks safely.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.ShortformDirectory.Count4Bytes">
+            <summary>
+            Number of directory entries.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.ShortformDirectory.Count8Bytes">
+            <summary>
+            Number of directory entries requiring 64-bit entries, if any inode numbers require 64-bits. Zero otherwise.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xfs.ShortformDirectoryEntry.ToString">
+            <inheritdoc />
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Magic">
+            <summary>
+            magic number == XFS_SB_MAGIC
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Blocksize">
+            <summary>
+            logical block size, bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.DataBlocks">
+            <summary>
+            number of data blocks
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.RealtimeBlocks">
+            <summary>
+            number of realtime blocks
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.RealtimeExtents">
+            <summary>
+            number of realtime extents
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.UniqueId">
+            <summary>
+            user-visible file system unique id
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Logstart">
+            <summary>
+            starting block of log if internal
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.RootInode">
+            <summary>
+            root inode number
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.RealtimeBitmapInode">
+            <summary>
+            bitmap inode for realtime extents
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.RealtimeSummaryInode">
+            <summary>
+            summary inode for rt bitmap
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.RealtimeExtentSize">
+            <summary>
+            realtime extent size, blocks
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.AgBlocks">
+            <summary>
+            size of an allocation group
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.AgCount">
+            <summary>
+            number of allocation groups
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.RealtimeBitmapBlocks">
+            <summary>
+            number of rt bitmap blocks
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.LogBlocks">
+            <summary>
+            number of log blocks
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Version">
+            <summary>
+            header version == XFS_SB_VERSION
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.SectorSize">
+            <summary>
+            volume sector size, bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.InodeSize">
+            <summary>
+            inode size, bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.InodesPerBlock">
+            <summary>
+            inodes per block
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.FilesystemName">
+            <summary>
+            file system name
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.BlocksizeLog2">
+            <summary>
+            log2 of <see cref="P:DiscUtils.Xfs.SuperBlock.Blocksize"/>
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.SectorSizeLog2">
+            <summary>
+            log2 of <see cref="P:DiscUtils.Xfs.SuperBlock.SectorSize"/>
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.InodeSizeLog2">
+            <summary>
+            log2 of <see cref="P:DiscUtils.Xfs.SuperBlock.InodeSize"/>
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.InodesPerBlockLog2">
+            <summary>
+            log2 of <see cref="P:DiscUtils.Xfs.SuperBlock.InodesPerBlock"/>
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.AgBlocksLog2">
+            <summary>
+            log2 of <see cref="P:DiscUtils.Xfs.SuperBlock.AgBlocks"/> (rounded up)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.RealtimeExtentsLog2">
+            <summary>
+            log2 of <see cref="P:DiscUtils.Xfs.SuperBlock.RealtimeExtents"/>
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.InProgress">
+            <summary>
+            mkfs is in progress, don't mount
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.InodesMaxPercent">
+            <summary>
+            max % of fs for inode space
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.AllocatedInodes">
+            <summary>
+            allocated inodes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.FreeInodes">
+            <summary>
+            free inodes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.FreeDataBlocks">
+            <summary>
+            free data blocks
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.FreeRealtimeExtents">
+            <summary>
+            free realtime extents
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.UserQuotaInode">
+            <summary>
+            user quota inode
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.GroupQuotaInode">
+            <summary>
+            group quota inode
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.QuotaFlags">
+            <summary>
+            quota flags
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Flags">
+            <summary>
+            misc. flags
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.SharedVersionNumber">
+            <summary>
+            shared version number
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.InodeChunkAlignment">
+            <summary>
+            inode chunk alignment, fsblocks
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Unit">
+            <summary>
+            stripe or raid unit
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Width">
+            <summary>
+            stripe or raid width
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.DirBlockLog2">
+            <summary>
+            log2 of dir block size (fsbs)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.LogSectorSizeLog2">
+            <summary>
+            log2 of the log sector size
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.LogSectorSize">
+            <summary>
+            sector size for the log, bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.LogUnitSize">
+            <summary>
+            stripe unit size for the log
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Features2">
+            <summary>
+            additional feature bits
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.BadFeatures2">
+            <summary>
+            bad features2 field as a result of failing to pad the sb structure to
+            64 bits. Some machines will be using this field for features2 bits.
+            Easiest just to mark it bad and not use it for anything else.
+            
+            This is not kept up to date in memory; it is always overwritten by
+            the value in sb_features2 when formatting the incore superblock to
+            the disk buffer.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Crc">
+            <summary>
+            superblock crc
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.SparseInodeAlignment">
+            <summary>
+            sparse inode chunk alignment
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.ProjectQuotaInode">
+            <summary>
+            project quota inode
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.Lsn">
+            <summary>
+            last write sequence
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.SuperBlock.MetaUuid">
+            <summary>
+            metadata file system unique id
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Xfs.Version2Features">
+            <summary>
+            Additional version flags if <see cref="!:VersionFlags.MOREBITSBIT"/> is set in <see cref="P:DiscUtils.Xfs.SuperBlock.Version"/>.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.Version2Features.LazySbBitCount">
+            <summary>
+            Lazy global counters. Making a filesystem with this
+            bit set can improve performance. The global free
+            space and inode counts are only updated in the
+            primary superblock when the filesystem is cleanly
+            unmounted.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.Version2Features.ExtendedAttributeVersion2">
+            <summary>
+            Extended attributes version 2. Making a filesystem
+            with this optimises the inode layout of extended
+            attributes. If this bit is set and the noattr2 mount
+            flag is not specified, the di_forkoff inode field
+            will be dynamically adjusted.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.Version2Features.Parent">
+            <summary>
+            Parent pointers. All inodes must have an extended
+            attribute that points back to its parent inode. The
+            primary purpose for this information is in backup
+            systems.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.Version2Features.ProjectId32Bit">
+            <summary>
+            32-bit Project ID. Inodes can be associated with a
+            project ID number, which can be used to enforce disk
+            space usage quotas for a particular group of
+            directories. This flag indicates that project IDs can be
+            32 bits in size.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.Version2Features.Crc">
+            <summary>
+            Metadata checksumming. All metadata blocks have
+            an extended header containing the block checksum,
+            a copy of the metadata UUID, the log sequence
+            number of the last update to prevent stale replays,
+            and a back pointer to the owner of the block. This
+            feature must be and can only be set if the lowest
+            nibble of sb_versionnum is set to 5.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.Version2Features.FType">
+            <summary>
+            Directory file type. Each directory entry records the
+            type of the inode to which the entry points. This
+            speeds up directory iteration by removing the need
+            to load every inode into memory.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Xfs.VersionFlags">
+            <summary>
+            Filesystem version number. This is a bitmask specifying the features enabled when creating the filesystem.
+            Any disk checking tools or drivers that do not recognize any set bits must not operate upon the filesystem.
+            Most of the flags indicate features introduced over time.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.ExtendedAttributes">
+            <summary>
+            Set if any inode have extended attributes. If this bit is
+            set; the XFS_SB_VERSION2_ATTR2BIT is not
+            set; and the attr2 mount flag is not specified, the
+            di_forkoff inode field will not be dynamically
+            adjusted.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.NLink">
+            <summary>
+            Set if any inodes use 32-bit di_nlink values.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.Quota">
+            <summary>
+            Quotas are enabled on the filesystem. This also
+            brings in the various quota fields in the superblock.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.Alignment">
+            <summary>
+            Set if sb_inoalignmt is used.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.DAlignment">
+            <summary>
+            Set if sb_unit and sb_width are used.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.Shared">
+            <summary>
+            Set if sb_shared_vn is used.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.LogV2">
+            <summary>
+            Version 2 journaling logs are used.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.Sector">
+            <summary>
+            Set if sb_sectsize is not 512.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.ExtentFlag">
+            <summary>
+            Unwritten extents are used. This is always set.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.DirV2">
+            <summary>
+            Version 2 directories are used. This is always set.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.Borg">
+            <summary>
+            ASCII only case-insens.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Xfs.VersionFlags.Features2">
+            <summary>
+            Set if the sb_features2 field in the superblock
+            contains more flags.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.VfsXfsFileSystem.VolumeLabel">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Xfs.VfsXfsFileSystem.ConvertDirEntryToFile(DiscUtils.Xfs.DirEntry)">
+            <inheritdoc />
+        </member>
+        <member name="P:DiscUtils.Xfs.VfsXfsFileSystem.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.VfsXfsFileSystem.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.VfsXfsFileSystem.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xfs.VfsXfsFileSystem.XFS_AG_DADDR(DiscUtils.Xfs.SuperBlock,System.Int32,System.Int64)">
+            <summary>
+            https://github.com/torvalds/linux/blob/2a610b8aa8e5bd449ba270e517b0e72295d62c9c/fs/xfs/libxfs/xfs_format.h#L832
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xfs.VfsXfsFileSystem.XFS_AGB_TO_DADDR(DiscUtils.Xfs.SuperBlock,System.Int32,System.Int32)">
+            <summary>
+            https://github.com/torvalds/linux/blob/2a610b8aa8e5bd449ba270e517b0e72295d62c9c/fs/xfs/libxfs/xfs_format.h#L829
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xfs.VfsXfsFileSystem.XFS_FSB_TO_BB(DiscUtils.Xfs.SuperBlock,System.Int64)">
+            <summary>
+            https://github.com/torvalds/linux/blob/2a610b8aa8e5bd449ba270e517b0e72295d62c9c/fs/xfs/libxfs/xfs_format.h#L587
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xfs.VfsXfsFileSystem.XFS_AGF_DADDR(DiscUtils.Xfs.SuperBlock)">
+            <summary>
+            https://github.com/torvalds/linux/blob/2a610b8aa8e5bd449ba270e517b0e72295d62c9c/fs/xfs/libxfs/xfs_format.h#L716
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Xfs.XfsFileSystem">
+            <summary>
+            Read-only access to ext file system.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Xfs.XfsFileSystem.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the ExtFileSystem class.
+            </summary>
+            <param name="stream">The stream containing the ext file system.</param>
+        </member>
+        <member name="M:DiscUtils.Xfs.XfsFileSystem.#ctor(System.IO.Stream,DiscUtils.FileSystemParameters)">
+            <summary>
+            Initializes a new instance of the ExtFileSystem class.
+            </summary>
+            <param name="stream">The stream containing the ext file system.</param>
+            <param name="parameters">The generic file system parameters (only file name encoding is honoured).</param>
+        </member>
+        <member name="M:DiscUtils.Xfs.XfsFileSystem.GetUnixFileInfo(System.String)">
+            <summary>
+            Retrieves Unix-specific information about a file or directory.
+            </summary>
+            <param name="path">Path to the file or directory.</param>
+            <returns>Information about the owner, group, permissions and type of the
+            file or directory.</returns>
+        </member>
+        <member name="T:DiscUtils.Xfs.XfsFileSystemOptions">
+            <summary>
+            XFS file system options.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Xfs.XfsFileSystemOptions.FileNameEncoding">
+            <summary>
+            Gets or sets the character encoding used for file names.
+            </summary>
+        </member>
+    </members>
+</doc>

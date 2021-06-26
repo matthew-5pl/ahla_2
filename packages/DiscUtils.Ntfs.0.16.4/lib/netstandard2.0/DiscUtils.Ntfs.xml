@@ -1,0 +1,1842 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Ntfs</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Ntfs.AttributeReference">
+            <summary>
+            Fully-qualified reference to an attribute.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.AttributeReference.#ctor(DiscUtils.Ntfs.FileRecordReference,System.UInt16)">
+            <summary>
+            Initializes a new instance of the AttributeReference class.
+            </summary>
+            <param name="fileReference">The file containing the attribute.</param>
+            <param name="attributeId">The identity of the attribute within the file record.</param>
+        </member>
+        <member name="P:DiscUtils.Ntfs.AttributeReference.AttributeId">
+            <summary>
+            Gets the identity of the attribute within the file record.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.AttributeReference.File">
+            <summary>
+            Gets the file containing the attribute.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.AttributeReference.CompareTo(DiscUtils.Ntfs.AttributeReference)">
+            <summary>
+            Compares this attribute reference to another.
+            </summary>
+            <param name="other">The attribute reference to compare against.</param>
+            <returns>Zero if references are identical.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.AttributeReference.Equals(DiscUtils.Ntfs.AttributeReference)">
+            <summary>
+            Indicates if two references are equivalent.
+            </summary>
+            <param name="other">The attribute reference to compare.</param>
+            <returns><c>true</c> if the references are equivalent.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.AttributeReference.ToString">
+            <summary>
+            The reference as a string.
+            </summary>
+            <returns>String representing the attribute.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.AttributeReference.Equals(System.Object)">
+            <summary>
+            Indicates if this reference is equivalent to another object.
+            </summary>
+            <param name="obj">The object to compare.</param>
+            <returns><c>true</c> if obj is an equivalent attribute reference.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.AttributeReference.GetHashCode">
+            <summary>
+            Gets the hash code for this reference.
+            </summary>
+            <returns>The hash code.</returns>
+        </member>
+        <member name="T:DiscUtils.Ntfs.AttributeType">
+            <summary>
+            Enumeration of NTFS file attribute types.
+            </summary>
+            <remarks>Normally applications only create Data attributes.</remarks>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.None">
+            <summary>
+            No type specified.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.StandardInformation">
+            <summary>
+            NTFS Standard Information.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.AttributeList">
+            <summary>
+            Attribute list, that holds a list of attribute locations for files with a large attribute set.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.FileName">
+            <summary>
+            FileName information, one per hard link.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.ObjectId">
+            <summary>
+            Distributed Link Tracking object identity.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.SecurityDescriptor">
+            <summary>
+            Legacy Security Descriptor attribute.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.VolumeName">
+            <summary>
+            The name of the NTFS volume.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.VolumeInformation">
+            <summary>
+            Information about the NTFS volume.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.Data">
+            <summary>
+            File contents, a file may have multiple data attributes (default is unnamed).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.IndexRoot">
+            <summary>
+            Root information for directories and other NTFS index's.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.IndexAllocation">
+            <summary>
+            For 'large' directories and other NTFS index's, the index contents.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.Bitmap">
+            <summary>
+            Bitmask of allocated clusters, records, etc - typically used in indexes.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.ReparsePoint">
+            <summary>
+            ReparsePoint information.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.ExtendedAttributesInformation">
+            <summary>
+            Extended Attributes meta-information.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.ExtendedAttributes">
+            <summary>
+            Extended Attributes data.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.PropertySet">
+            <summary>
+            Legacy attribute type from NT (not used).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.AttributeType.LoggedUtilityStream">
+            <summary>
+            Encrypted File System (EFS) data.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.ClusterBitmap.AllocateClusters(System.Int64,System.Int64,System.Boolean,System.Int64)">
+            <summary>
+            Allocates clusters from the disk.
+            </summary>
+            <param name="count">The number of clusters to allocate.</param>
+            <param name="proposedStart">The proposed start cluster (or -1).</param>
+            <param name="isMft"><c>true</c> if this attribute is the $MFT\$DATA attribute.</param>
+            <param name="total">The total number of clusters in the file, including this allocation.</param>
+            <returns>The list of cluster allocations.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.ClusterBitmap.SetTotalClusters(System.Int64)">
+            <summary>
+            Sets the total number of clusters managed in the volume.
+            </summary>
+            <param name="numClusters">Total number of clusters in the volume.</param>
+            <remarks>
+            Any clusters represented in the bitmap beyond the total number in the volume are marked as in-use.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.ClusterBitmap.FindClusters(System.Int64,System.Collections.Generic.List{System.Tuple{System.Int64,System.Int64}},System.Int64,System.Int64,System.Boolean,System.Boolean,System.Int64)">
+            <summary>
+            Finds one or more free clusters in a range.
+            </summary>
+            <param name="count">The number of clusters required.</param>
+            <param name="result">The list of clusters found (i.e. out param).</param>
+            <param name="start">The first cluster in the range to look at.</param>
+            <param name="end">The last cluster in the range to look at (exclusive).</param>
+            <param name="isMft">Indicates if the clusters are for the MFT.</param>
+            <param name="contiguous">Indicates if contiguous clusters are required.</param>
+            <param name="headroom">Indicates how many clusters to skip before next allocation, to prevent fragmentation.</param>
+            <returns>The number of clusters found in the range.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.CookedDataRuns.TruncateAt(System.Int32)">
+            <summary>
+            Truncates the set of data runs.
+            </summary>
+            <param name="index">The first run to be truncated.</param>
+        </member>
+        <member name="P:DiscUtils.Ntfs.File.AllAttributes">
+            <summary>
+            Gets an enumeration of all the attributes.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.File.GetAttribute(DiscUtils.Ntfs.AttributeReference)">
+            <summary>
+            Gets an attribute by reference.
+            </summary>
+            <param name="attrRef">Reference to the attribute.</param>
+            <returns>The attribute.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.File.GetAttribute(DiscUtils.Ntfs.AttributeType,System.String)">
+            <summary>
+             Gets the first (if more than one) instance of a named attribute.
+            </summary>
+            <param name="type">The attribute type.</param>
+            <param name="name">The attribute's name.</param>
+            <returns>The attribute of <c>null</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.File.GetAttributes(DiscUtils.Ntfs.AttributeType)">
+            <summary>
+             Gets all instances of an unnamed attribute.
+            </summary>
+            <param name="type">The attribute type.</param>
+            <returns>The attributes.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.File.CreateAttribute(DiscUtils.Ntfs.AttributeType,DiscUtils.Ntfs.AttributeFlags)">
+            <summary>
+            Creates a new unnamed attribute.
+            </summary>
+            <param name="type">The type of the new attribute.</param>
+            <param name="flags">The flags of the new attribute.</param>
+            <returns>The new attribute.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.File.CreateAttribute(DiscUtils.Ntfs.AttributeType,System.String,DiscUtils.Ntfs.AttributeFlags)">
+            <summary>
+            Creates a new attribute.
+            </summary>
+            <param name="type">The type of the new attribute.</param>
+            <param name="name">The name of the new attribute.</param>
+            <param name="flags">The flags of the new attribute.</param>
+            <returns>The new attribute.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.File.CreateAttribute(DiscUtils.Ntfs.AttributeType,System.String,DiscUtils.Ntfs.AttributeFlags,System.Int64,System.UInt64,System.UInt32)">
+            <summary>
+            Creates a new attribute at a fixed cluster.
+            </summary>
+            <param name="type">The type of the new attribute.</param>
+            <param name="name">The name of the new attribute.</param>
+            <param name="flags">The flags of the new attribute.</param>
+            <param name="firstCluster">The first cluster to assign to the attribute.</param>
+            <param name="numClusters">The number of sequential clusters to assign to the attribute.</param>
+            <param name="bytesPerCluster">The number of bytes in each cluster.</param>
+            <returns>The new attribute.</returns>
+        </member>
+        <member name="T:DiscUtils.Ntfs.File.FileStream">
+            <summary>
+            Wrapper for Resident/Non-Resident attribute streams, that remains valid
+            despite the attribute oscillating between resident and not.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.File.FileStream.ChangeAttributeResidencyByLength(System.Int64)">
+            <summary>
+            Change attribute residency if it gets too big (or small).
+            </summary>
+            <param name="value">The new (anticipated) length of the stream.</param>
+            <remarks>Has hysteresis - the decision is based on the input and the current
+            state, not the current state alone.</remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.FileRecord.GetAttribute(System.UInt16)">
+            <summary>
+            Gets an attribute by it's id.
+            </summary>
+            <param name="id">The attribute's id.</param>
+            <returns>The attribute, or <c>null</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.FileRecord.GetAttribute(DiscUtils.Ntfs.AttributeType)">
+            <summary>
+            Gets an unnamed attribute.
+            </summary>
+            <param name="type">The attribute type.</param>
+            <returns>The attribute, or <c>null</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.FileRecord.GetAttribute(DiscUtils.Ntfs.AttributeType,System.String)">
+            <summary>
+            Gets an named attribute.
+            </summary>
+            <param name="type">The attribute type.</param>
+            <param name="name">The name of the attribute.</param>
+            <returns>The attribute, or <c>null</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.FileRecord.CreateAttribute(DiscUtils.Ntfs.AttributeType,System.String,System.Boolean,DiscUtils.Ntfs.AttributeFlags)">
+            <summary>
+            Creates a new attribute.
+            </summary>
+            <param name="type">The type of the new attribute.</param>
+            <param name="name">The name of the new attribute.</param>
+            <param name="indexed">Whether the attribute is marked as indexed.</param>
+            <param name="flags">Flags for the new attribute.</param>
+            <returns>The id of the new attribute.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.FileRecord.CreateNonResidentAttribute(DiscUtils.Ntfs.AttributeType,System.String,DiscUtils.Ntfs.AttributeFlags)">
+            <summary>
+            Creates a new non-resident attribute.
+            </summary>
+            <param name="type">The type of the new attribute.</param>
+            <param name="name">The name of the new attribute.</param>
+            <param name="flags">Flags for the new attribute.</param>
+            <returns>The id of the new attribute.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.FileRecord.CreateNonResidentAttribute(DiscUtils.Ntfs.AttributeType,System.String,DiscUtils.Ntfs.AttributeFlags,System.Int64,System.UInt64,System.UInt32)">
+            <summary>
+            Creates a new attribute.
+            </summary>
+            <param name="type">The type of the new attribute.</param>
+            <param name="name">The name of the new attribute.</param>
+            <param name="flags">Flags for the new attribute.</param>
+            <param name="firstCluster">The first cluster to assign to the attribute.</param>
+            <param name="numClusters">The number of sequential clusters to assign to the attribute.</param>
+            <param name="bytesPerCluster">The number of bytes in each cluster.</param>
+            <returns>The id of the new attribute.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.FileRecord.AddAttribute(DiscUtils.Ntfs.AttributeRecord)">
+            <summary>
+            Adds an existing attribute.
+            </summary>
+            <param name="attrRec">The attribute to add.</param>
+            <returns>The new Id of the attribute.</returns>
+            <remarks>This method is used to move an attribute between different MFT records.</remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.FileRecord.RemoveAttribute(System.UInt16)">
+            <summary>
+            Removes an attribute by it's id.
+            </summary>
+            <param name="id">The attribute's id.</param>
+        </member>
+        <member name="F:DiscUtils.Ntfs.IndexBlock.FieldSize">
+            <summary>
+            Size of meta-data placed at start of a block.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.IndexNode.Depose">
+            <summary>
+            Only valid on the root node, this method moves all entries into a
+            single child node.
+            </summary>
+            <returns>Whether any changes were made.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.IndexNode.LiftNode(System.Int32)">
+            <summary>
+            Removes redundant nodes (that contain only an 'End' entry).
+            </summary>
+            <param name="entryIndex">The index of the entry that may have a redundant child.</param>
+            <returns>An entry that needs to be promoted to the parent node (if any).</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.IndexNode.FindLargestLeaf">
+            <summary>
+            Finds the largest leaf entry in this tree.
+            </summary>
+            <returns>The index entry of the largest leaf.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.IndexNode.Divide">
+            <summary>
+            Only valid on non-root nodes, this method divides the node in two,
+            adding the new node to the current parent.
+            </summary>
+            <returns>An entry that needs to be promoted to the parent node (if any).</returns>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.AttributeFlags">
+            <summary>
+            Flags indicating how an attribute's content is stored on disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.AttributeFlags.None">
+            <summary>
+            The data is stored in linear form.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.AttributeFlags.Compressed">
+            <summary>
+            The data is compressed.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.AttributeFlags.Encrypted">
+            <summary>
+            The data is encrypted.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.AttributeFlags.Sparse">
+            <summary>
+            The data is stored in sparse form.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.AttributeListAttribute">
+            <summary>
+            List of attributes for files that are split over multiple Master File Table entries.
+            </summary>
+            <remarks>
+            <para>
+            Files with lots of attribute data (for example that have become very fragmented) contain
+            this attribute in their 'base' Master File Table entry.  This attribute acts as an index,
+            indicating for each attribute in the file, which Master File Table entry contains the
+            attribute.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.AttributeListAttribute.Entries">
+            <summary>
+            Gets the entries in this attribute list.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.AttributeListEntry">
+            <summary>
+            Represents an entry in an AttributeList attribute.
+            </summary>
+            <remarks>Each instance of this class points to the actual Master File Table
+            entry that contains the attribute.  It is used for files split over multiple
+            Master File Table entries.</remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.AttributeListEntry.AttributeIdentifier">
+            <summary>
+            Gets the identifier of the attribute.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.AttributeListEntry.AttributeName">
+            <summary>
+            Gets the name of the attribute (if any).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.AttributeListEntry.AttributeType">
+            <summary>
+            Gets the type of the attribute.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.AttributeListEntry.FirstFileCluster">
+            <summary>
+            Gets the first cluster represented in this attribute (normally 0).
+            </summary>
+            <remarks>
+            <para>
+            For very fragmented files, it can be necessary to split a single attribute
+            over multiple Master File Table entries.  This is achieved with multiple attributes
+            with the same name and type (one per Master File Table entry), with this field
+            determining the logical order of the attributes.
+            </para>
+            <para>
+            The number is the first 'virtual' cluster present (i.e. divide the file's content
+            into 'cluster' sized chunks, this is the first of those clusters logically
+            represented in the attribute).
+            </para>
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.AttributeListEntry.MasterFileTableEntry">
+            <summary>
+            Gets the Master File Table entry that contains the attribute.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.EntryState">
+            <summary>
+            Flags indicating the state of a Master File Table entry.
+            </summary>
+            <remarks>
+            Used to filter entries in the Master File Table.
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.EntryState.None">
+            <summary>
+            No entries match.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.EntryState.InUse">
+            <summary>
+            The entry is currently in use.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.EntryState.NotInUse">
+            <summary>
+            The entry is currently not in use.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.EntryState.All">
+            <summary>
+            All entries match.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.EntryStates">
+            <summary>
+            Flags indicating the state of a Master File Table entry.
+            </summary>
+            <remarks>
+            Used to filter entries in the Master File Table.
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.EntryStates.None">
+            <summary>
+            No entries match.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.EntryStates.InUse">
+            <summary>
+            The entry is currently in use.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.EntryStates.NotInUse">
+            <summary>
+            The entry is currently not in use.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.EntryStates.All">
+            <summary>
+            All entries match.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.FileNameAttribute">
+            <summary>
+            Representation of an NTFS File Name attribute.
+            </summary>
+            <remarks>
+            <para>
+            Each Master File Table entry (MFT Entry) has one of these attributes for each
+            hard link.  Files with a long name and a short name will have at least two of
+            these attributes.</para>
+            <para>
+            The details in this attribute may be inconsistent with similar information in
+            the StandardInformationAttribute for a file.  The StandardInformation is
+            definitive, this attribute holds a 'cache' of the information.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.AllocatedSize">
+            <summary>
+            Gets the amount of disk space allocated for the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.CreationTime">
+            <summary>
+            Gets the creation time of the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.ExtendedAttributesSizeOrReparsePointTag">
+            <summary>
+            Gets the extended attributes size, or a reparse tag, depending on the nature of the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.FileAttributes">
+            <summary>
+            Gets the attributes of the file, as stored by NTFS.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.FileName">
+            <summary>
+            Gets the name of the file within the parent directory.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.FileNameNamespace">
+            <summary>
+            Gets the namespace of the FileName property.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.LastAccessTime">
+            <summary>
+            Gets the last access time of the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.MasterFileTableChangedTime">
+            <summary>
+            Gets the last time the Master File Table entry for the file was changed.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.ModificationTime">
+            <summary>
+            Gets the modification time of the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.ParentDirectory">
+            <summary>
+            Gets the reference to the parent directory.
+            </summary>
+            <remarks>
+            This attribute stores the name of a file within a directory, this field
+            provides the link back to the directory.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.FileNameAttribute.RealSize">
+            <summary>
+            Gets the amount of data stored in the file.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.GenericAttribute">
+            <summary>
+            Base class for all attributes within Master File Table entries.
+            </summary>
+            <remarks>
+            More specialized base classes are provided for known attribute types.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.GenericAttribute.AttributeType">
+            <summary>
+            Gets the type of the attribute.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.GenericAttribute.Content">
+            <summary>
+            Gets a buffer that can access the content of the attribute.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.GenericAttribute.ContentLength">
+            <summary>
+            Gets the amount of valid data in the attribute's content.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.GenericAttribute.Flags">
+            <summary>
+            Gets the flags indicating how the content of the attribute is stored.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.GenericAttribute.Identifier">
+            <summary>
+            Gets the unique id of the attribute.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.GenericAttribute.IsResident">
+            <summary>
+            Gets a value indicating whether the attribute content is stored in the MFT record itself.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.GenericAttribute.Name">
+            <summary>
+            Gets the name of the attribute (if any).
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.MasterFileTable">
+            <summary>
+            Provides read-only access to the Master File Table of an NTFS file system.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.MasterFileTableIndex">
+            <summary>
+            Index of the Master File Table itself.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.MasterFileTableMirrorIndex">
+            <summary>
+            Index of the Master File Table Mirror file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.LogFileIndex">
+            <summary>
+            Index of the Log file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.VolumeIndex">
+            <summary>
+            Index of the Volume file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.AttributeDefinitionIndex">
+            <summary>
+            Index of the Attribute Definition file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.RootDirectoryIndex">
+            <summary>
+            Index of the Root Directory.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.BitmapIndex">
+            <summary>
+            Index of the Bitmap file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.BootIndex">
+            <summary>
+            Index of the Boot sector(s).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.BadClusterIndex">
+            <summary>
+            Index of the Bad Cluster file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.SecureIndex">
+            <summary>
+            Index of the Security Descriptor file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.UppercaseIndex">
+            <summary>
+            Index of the Uppercase mapping file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.ExtendDirectoryIndex">
+            <summary>
+            Index of the Optional Extensions directory.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTable.FirstNormalFileIndex">
+            <summary>
+            First index available for 'normal' files.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTable.Item(System.Int64)">
+            <summary>
+            Gets an entry by index.
+            </summary>
+            <param name="index">The index of the entry.</param>
+            <returns>The entry.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.Internals.MasterFileTable.GetEntries(DiscUtils.Ntfs.Internals.EntryStates)">
+            <summary>
+            Enumerates all entries.
+            </summary>
+            <param name="filter">Filter controlling which entries are returned.</param>
+            <returns>An enumeration of entries matching the filter.</returns>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.MasterFileTableEntry">
+            <summary>
+            An entry within the Master File Table.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.Attributes">
+            <summary>
+            Gets the attributes contained in this entry.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.BaseRecordReference">
+            <summary>
+            Gets the identity of the base entry for files split over multiple entries.
+            </summary>
+            <remarks>
+            All entries that form part of the same file have the same value for
+            this property.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.Flags">
+            <summary>
+            Gets the flags indicating the nature of the entry.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.HardLinkCount">
+            <summary>
+            Gets the number of hard links referencing this file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.Index">
+            <summary>
+            Gets the index of this entry in the Master File Table.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.LogFileSequenceNumber">
+            <summary>
+            Gets the change identifier that is updated each time the file is modified by Windows, relates to the NTFS log file.
+            </summary>
+            <remarks>
+            The NTFS log file provides journalling, preventing meta-data corruption in the event of a system crash.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.NextAttributeId">
+            <summary>
+            Gets the next attribute identity that will be allocated.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.SelfIndex">
+            <summary>
+            Gets the index of this entry in the Master File Table (as stored in the entry itself).
+            </summary>
+            <remarks>
+            Note - older versions of Windows did not store this value, so it may be Zero.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableEntry.SequenceNumber">
+            <summary>
+            Gets the revision number of the entry.
+            </summary>
+            <remarks>
+            Each time an entry is allocated or de-allocated, this number is incremented by one.
+            </remarks>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.MasterFileTableEntryFlags">
+            <summary>
+            Flags indicating the nature of a Master File Table entry.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTableEntryFlags.None">
+            <summary>
+            Default value.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTableEntryFlags.InUse">
+            <summary>
+            The entry is currently in use.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTableEntryFlags.IsDirectory">
+            <summary>
+            The entry is for a directory (rather than a file).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTableEntryFlags.IsMetaFile">
+            <summary>
+            The entry is for a file that forms parts of the NTFS meta-data.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.MasterFileTableEntryFlags.HasViewIndex">
+            <summary>
+            The entry contains index attributes.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableRecord.JournalSequenceNumber">
+            <summary>
+            Changes each time the file is modified by Windows, relates to the NTFS journal.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.MasterFileTableReference">
+            <summary>
+            A reference to a Master File Table entry.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableReference.RecordIndex">
+            <summary>
+            Gets the index of the referred entry in the Master File Table.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.MasterFileTableReference.RecordSequenceNumber">
+            <summary>
+            Gets the revision number of the entry.
+            </summary>
+            <remarks>
+            This value prevents accidental reference to an entry - it will get out
+            of sync with the actual entry if the entry is re-allocated or de-allocated.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.Internals.MasterFileTableReference.op_Equality(DiscUtils.Ntfs.Internals.MasterFileTableReference,DiscUtils.Ntfs.Internals.MasterFileTableReference)">
+            <summary>
+            Compares to instances for equality.
+            </summary>
+            <param name="a">The first instance to compare.</param>
+            <param name="b">The second instance to compare.</param>
+            <returns><code>true</code> if the instances are equivalent, else <code>false</code>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.Internals.MasterFileTableReference.op_Inequality(DiscUtils.Ntfs.Internals.MasterFileTableReference,DiscUtils.Ntfs.Internals.MasterFileTableReference)">
+            <summary>
+            Compares to instances for equality.
+            </summary>
+            <param name="a">The first instance to compare.</param>
+            <param name="b">The second instance to compare.</param>
+            <returns><code>true</code> if the instances are not equivalent, else <code>false</code>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.Internals.MasterFileTableReference.Equals(System.Object)">
+            <summary>
+            Compares another object for equality.
+            </summary>
+            <param name="obj">The object to compare.</param>
+            <returns><code>true</code> if the other object is equivalent, else <code>false</code>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.Internals.MasterFileTableReference.GetHashCode">
+            <summary>
+            Gets a hash code for this instance.
+            </summary>
+            <returns>The hash code.</returns>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.NtfsFileAttributes">
+            <summary>
+            File attributes as stored natively by NTFS.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.None">
+            <summary>
+            No attributes.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.ReadOnly">
+            <summary>
+            The file is read-only.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Hidden">
+            <summary>
+            The file is hidden.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.System">
+            <summary>
+            The file is part of the Operating System.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Archive">
+            <summary>
+            The file should be archived.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Device">
+            <summary>
+            The file is actually a device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Normal">
+            <summary>
+            The file is a 'normal' file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Temporary">
+            <summary>
+            The file is a temporary file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Sparse">
+            <summary>
+            The file content is stored in sparse form.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.ReparsePoint">
+            <summary>
+            The file has a reparse point attached.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Compressed">
+            <summary>
+            The file content is stored compressed.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Offline">
+            <summary>
+            The file is an 'offline' file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.NotIndexed">
+            <summary>
+            The file is not indexed.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Encrypted">
+            <summary>
+            The file content is encrypted.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.Directory">
+            <summary>
+            The file is actually a directory.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsFileAttributes.IndexView">
+            <summary>
+            The file has an index attribute.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.NtfsNamespace">
+            <summary>
+            The known NTFS namespaces.
+            </summary>
+            <remarks>
+            NTFS has multiple namespaces, indicating whether a name is the
+            long name for a file, the short name for a file, both, or none.
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsNamespace.Posix">
+            <summary>
+            Posix namespace (i.e. long name).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsNamespace.Win32">
+            <summary>
+            Windows long file name.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsNamespace.Dos">
+            <summary>
+            DOS (8.3) file name.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.Internals.NtfsNamespace.Win32AndDos">
+            <summary>
+            File name that is both the long name and the DOS (8.3) name.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.Internals.StandardInformationAttribute">
+            <summary>
+            Representation of an NTFS File Name attribute.
+            </summary>
+            <para>
+            The details in this attribute may be inconsistent with similar information in
+            the FileNameAttribute(s) for a file.  This attribute is definitive, the
+            FileNameAttribute attribute holds a 'cache' of some of the information.
+            </para>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.ClassId">
+            <summary>
+            Gets the Unknown.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.CreationTime">
+            <summary>
+            Gets the creation time of the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.FileAttributes">
+            <summary>
+            Gets the attributes of the file, as stored by NTFS.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.JournalSequenceNumber">
+            <summary>
+            Gets the last update sequence number of the file (relates to the user-readable journal).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.LastAccessTime">
+            <summary>
+            Gets the last access time of the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.MasterFileTableChangedTime">
+            <summary>
+            Gets the last time the Master File Table entry for the file was changed.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.MaxVersions">
+            <summary>
+            Gets the maximum number of file versions (normally 0).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.ModificationTime">
+            <summary>
+            Gets the modification time of the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.OwnerId">
+            <summary>
+            Gets the owner identity, for the purposes of quota allocation.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.QuotaCharged">
+            <summary>
+            Gets the amount charged to the owners quota for this file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.SecurityId">
+            <summary>
+            Gets the identifier of the Security Descriptor for this file.
+            </summary>
+            <remarks>
+            Security Descriptors are stored in the \$Secure meta-data file.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.Internals.StandardInformationAttribute.Version">
+            <summary>
+            Gets the version number of the file (normally 0).
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.LZNT1">
+            <summary>
+            Implementation of the LZNT1 algorithm used for compressing NTFS files.
+            </summary>
+            <remarks>
+            Due to apparent bugs in Window's LZNT1 decompressor, it is <b>strongly</b> recommended that
+            only the block size of 4096 is used.  Other block sizes corrupt data on decompression.
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Ntfs.LzWindowDictionary._offsetList">
+            <summary>
+            Index of locations of each possible byte value within the compression window.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.MasterFileTable">
+            <summary>
+            Class representing the $MFT file on disk, including mirror.
+            </summary>
+            <remarks>This class only understands basic record structure, and is
+            ignorant of files that span multiple records.  This class should only
+            be used by the NtfsFileSystem and File classes.</remarks>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.MftIndex">
+            <summary>
+            MFT index of the MFT file itself.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.MftMirrorIndex">
+            <summary>
+            MFT index of the MFT Mirror file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.LogFileIndex">
+            <summary>
+            MFT Index of the Log file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.VolumeIndex">
+            <summary>
+            MFT Index of the Volume file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.AttrDefIndex">
+            <summary>
+            MFT Index of the Attribute Definition file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.RootDirIndex">
+            <summary>
+            MFT Index of the Root Directory.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.BitmapIndex">
+            <summary>
+            MFT Index of the Bitmap file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.BootIndex">
+            <summary>
+            MFT Index of the Boot sector(s).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.BadClusIndex">
+            <summary>
+            MFT Index of the Bad Bluster file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.SecureIndex">
+            <summary>
+            MFT Index of the Security Descriptor file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.UpCaseIndex">
+            <summary>
+            MFT Index of the Uppercase mapping file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.ExtendIndex">
+            <summary>
+            MFT Index of the Optional Extensions directory.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.MasterFileTable.FirstAvailableMftIndex">
+            <summary>
+            First MFT Index available for 'normal' files.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.MasterFileTable.Records">
+            <summary>
+            Gets the MFT records directly from the MFT stream - bypassing the record cache.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.NewFileOptions">
+            <summary>
+            Options controlling how new NTFS files are created.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NewFileOptions.#ctor">
+            <summary>
+            Initializes a new instance of the NewFileOptions class.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NewFileOptions.Compressed">
+            <summary>
+            Gets or sets whether the new file should be compressed.
+            </summary>
+            <remarks>The default (<c>null</c>) value indicates the file system default behaviour applies.</remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NewFileOptions.CreateShortNames">
+            <summary>
+            Gets or sets whether a short name should be created for the file.
+            </summary>
+            <remarks>The default (<c>null</c>) value indicates the file system default behaviour applies.</remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NewFileOptions.SecurityDescriptor">
+            <summary>
+            Gets or sets the security descriptor that to set for the new file.
+            </summary>
+            <remarks>The default (<c>null</c>) value indicates the security descriptor is inherited.</remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NonResidentAttributeRecord.AllocatedLength">
+            <summary>
+            The amount of space occupied by the attribute (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NonResidentAttributeRecord.CompressionUnitSize">
+            <summary>
+            Gets or sets the size of a compression unit (in clusters).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NonResidentAttributeRecord.DataLength">
+            <summary>
+            The amount of data in the attribute (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NonResidentAttributeRecord.InitializedDataLength">
+            <summary>
+            The amount of initialized data in the attribute (in bytes).
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.NtfsFileSystem">
+            <summary>
+            Class for accessing NTFS file systems.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the NtfsFileSystem class.
+            </summary>
+            <param name="stream">The stream containing the NTFS file system.</param>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.FriendlyName">
+            <summary>
+            Gets the friendly name for the file system.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.NtfsOptions">
+            <summary>
+            Gets the options that control how the file system is interpreted.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.VolumeLabel">
+            <summary>
+            Gets the volume label.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.CanWrite">
+            <summary>
+            Indicates if the file system supports write operations.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.ClusterSize">
+            <summary>
+            Gets the size of each cluster (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.TotalClusters">
+            <summary>
+            Gets the total number of clusters managed by the file system.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.CopyFile(System.String,System.String,System.Boolean)">
+            <summary>
+            Copies an existing file to a new file, allowing overwriting of an existing file.
+            </summary>
+            <param name="sourceFile">The source file.</param>
+            <param name="destinationFile">The destination file.</param>
+            <param name="overwrite">Whether to permit over-writing of an existing file.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.CreateDirectory(System.String)">
+            <summary>
+            Creates a directory.
+            </summary>
+            <param name="path">The path of the new directory.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.DeleteDirectory(System.String)">
+            <summary>
+            Deletes a directory.
+            </summary>
+            <param name="path">The path of the directory to delete.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.DeleteFile(System.String)">
+            <summary>
+            Deletes a file.
+            </summary>
+            <param name="path">The path of the file to delete.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.DirectoryExists(System.String)">
+            <summary>
+            Indicates if a directory exists.
+            </summary>
+            <param name="path">The path to test.</param>
+            <returns>true if the directory exists.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.FileExists(System.String)">
+            <summary>
+            Indicates if a file exists.
+            </summary>
+            <param name="path">The path to test.</param>
+            <returns>true if the file exists.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetDirectories(System.String,System.String,System.IO.SearchOption)">
+            <summary>
+            Gets the names of subdirectories in a specified directory matching a specified
+            search pattern, using a value to determine whether to search subdirectories.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <param name="searchOption">Indicates whether to search subdirectories.</param>
+            <returns>Array of directories matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetFiles(System.String,System.String,System.IO.SearchOption)">
+            <summary>
+            Gets the names of files in a specified directory matching a specified
+            search pattern, using a value to determine whether to search subdirectories.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <param name="searchOption">Indicates whether to search subdirectories.</param>
+            <returns>Array of files matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetFileSystemEntries(System.String)">
+            <summary>
+            Gets the names of all files and subdirectories in a specified directory.
+            </summary>
+            <param name="path">The path to search.</param>
+            <returns>Array of files and subdirectories.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetFileSystemEntries(System.String,System.String)">
+            <summary>
+            Gets the names of files and subdirectories in a specified directory matching a specified
+            search pattern.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <returns>Array of files and subdirectories matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.MoveDirectory(System.String,System.String)">
+            <summary>
+            Moves a directory.
+            </summary>
+            <param name="sourceDirectoryName">The directory to move.</param>
+            <param name="destinationDirectoryName">The target directory name.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.MoveFile(System.String,System.String,System.Boolean)">
+            <summary>
+            Moves a file, allowing an existing file to be overwritten.
+            </summary>
+            <param name="sourceName">The file to move.</param>
+            <param name="destinationName">The target file name.</param>
+            <param name="overwrite">Whether to permit a destination file to be overwritten.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.OpenFile(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <summary>
+            Opens the specified file.
+            </summary>
+            <param name="path">The full path of the file to open.</param>
+            <param name="mode">The file mode for the created stream.</param>
+            <param name="access">The access permissions for the returned stream.</param>
+            <returns>The new stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetAttributes(System.String)">
+            <summary>
+            Gets the attributes of a file or directory.
+            </summary>
+            <param name="path">The file or directory to inspect.</param>
+            <returns>The attributes of the file or directory.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.SetAttributes(System.String,System.IO.FileAttributes)">
+            <summary>
+            Sets the attributes of a file or directory.
+            </summary>
+            <param name="path">The file or directory to change.</param>
+            <param name="newValue">The new attributes of the file or directory.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetCreationTimeUtc(System.String)">
+            <summary>
+            Gets the creation time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The creation time.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.SetCreationTimeUtc(System.String,System.DateTime)">
+            <summary>
+            Sets the creation time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <param name="newTime">The new time to set.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetLastAccessTimeUtc(System.String)">
+            <summary>
+            Gets the last access time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The last access time.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <summary>
+            Sets the last access time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <param name="newTime">The new time to set.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetLastWriteTimeUtc(System.String)">
+            <summary>
+            Gets the last modification time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The last write time.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <summary>
+            Sets the last modification time (in local time) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <param name="newTime">The new time to set.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetFileLength(System.String)">
+            <summary>
+            Gets the length of a file.
+            </summary>
+            <param name="path">The path to the file.</param>
+            <returns>The length in bytes.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.ClusterToOffset(System.Int64)">
+            <summary>
+            Converts a cluster (index) into an absolute byte position in the underlying stream.
+            </summary>
+            <param name="cluster">The cluster to convert.</param>
+            <returns>The corresponding absolute byte position.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.OffsetToCluster(System.Int64)">
+            <summary>
+            Converts an absolute byte position in the underlying stream to a cluster (index).
+            </summary>
+            <param name="offset">The byte position to convert.</param>
+            <returns>The cluster containing the specified byte.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.PathToClusters(System.String)">
+            <summary>
+            Converts a file name to the list of clusters occupied by the file's data.
+            </summary>
+            <param name="path">The path to inspect.</param>
+            <returns>The clusters as a list of cluster ranges.</returns>
+            <remarks>Note that in some file systems, small files may not have dedicated
+            clusters.  Only dedicated clusters will be returned.</remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.PathToExtents(System.String)">
+            <summary>
+            Converts a file name to the extents containing its data.
+            </summary>
+            <param name="path">The path to inspect.</param>
+            <returns>The file extents, as absolute byte positions in the underlying stream.</returns>
+            <remarks>Use this method with caution - NTFS supports encrypted, sparse and compressed files
+            where bytes are not directly stored in extents.  Small files may be entirely stored in the 
+            Master File Table, where corruption protection algorithms mean that some bytes do not contain
+            the expected values.  This method merely indicates where file data is stored,
+            not what's stored.  To access the contents of a file, use OpenFile.</remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.BuildClusterMap">
+            <summary>
+            Gets an object that can convert between clusters and files.
+            </summary>
+            <returns>The cluster map.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.ReadBootCode">
+            <summary>
+            Reads the boot code of the file system into a byte array.
+            </summary>
+            <returns>The boot code, or <c>null</c> if not available.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Dump(System.IO.TextWriter,System.String)">
+            <summary>
+            Writes a diagnostic dump of key NTFS structures.
+            </summary>
+            <param name="writer">The writer to receive the dump.</param>
+            <param name="linePrefix">The indent to apply to the start of each line of output.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.HasHardLinks(System.String)">
+            <summary>
+            Indicates whether the file is known by other names.
+            </summary>
+            <param name="path">The file to inspect.</param>
+            <returns><c>true</c> if the file has other names, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetSecurity(System.String)">
+            <summary>
+            Gets the security descriptor associated with the file or directory.
+            </summary>
+            <param name="path">The file or directory to inspect.</param>
+            <returns>The security descriptor.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.SetSecurity(System.String,System.Security.AccessControl.RawSecurityDescriptor)">
+            <summary>
+            Sets the security descriptor associated with the file or directory.
+            </summary>
+            <param name="path">The file or directory to change.</param>
+            <param name="securityDescriptor">The new security descriptor.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.SetReparsePoint(System.String,DiscUtils.ReparsePoint)">
+            <summary>
+            Sets the reparse point data on a file or directory.
+            </summary>
+            <param name="path">The file to set the reparse point on.</param>
+            <param name="reparsePoint">The new reparse point.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetReparsePoint(System.String)">
+            <summary>
+            Gets the reparse point data associated with a file or directory.
+            </summary>
+            <param name="path">The file to query.</param>
+            <returns>The reparse point information.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.RemoveReparsePoint(System.String)">
+            <summary>
+            Removes a reparse point from a file or directory, without deleting the file or directory.
+            </summary>
+            <param name="path">The path to the file or directory to remove the reparse point from.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetShortName(System.String)">
+            <summary>
+            Gets the short name for a given path.
+            </summary>
+            <param name="path">The path to convert.</param>
+            <returns>The short name.</returns>
+            <remarks>
+            This method only gets the short name for the final part of the path, to
+            convert a complete path, call this method repeatedly, once for each path
+            segment.  If there is no short name for the given path,<c>null</c> is
+            returned.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.SetShortName(System.String,System.String)">
+            <summary>
+            Sets the short name for a given file or directory.
+            </summary>
+            <param name="path">The full path to the file or directory to change.</param>
+            <param name="shortName">The shortName, which should not include a path.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetFileStandardInformation(System.String)">
+            <summary>
+            Gets the standard file information for a file.
+            </summary>
+            <param name="path">The full path to the file or directory to query.</param>
+            <returns>The standard file information.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.SetFileStandardInformation(System.String,DiscUtils.WindowsFileInformation)">
+            <summary>
+            Sets the standard file information for a file.
+            </summary>
+            <param name="path">The full path to the file or directory to query.</param>
+            <param name="info">The standard file information.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetFileId(System.String)">
+            <summary>
+            Gets the file id for a given path.
+            </summary>
+            <param name="path">The path to get the id of.</param>
+            <returns>The file id.</returns>
+            <remarks>
+            The returned file id includes the MFT index of the primary file record for the file.
+            The file id can be used to determine if two paths refer to the same actual file.
+            The MFT index is held in the lower 48 bits of the id.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetAlternateDataStreams(System.String)">
+            <summary>
+            Gets the names of the alternate data streams for a file.
+            </summary>
+            <param name="path">The path to the file.</param>
+            <returns>
+            The list of alternate data streams (or empty, if none).  To access the contents
+            of the alternate streams, use OpenFile(path + ":" + name, ...).
+            </returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Format(System.IO.Stream,System.String,DiscUtils.Geometry,System.Int64,System.Int64)">
+            <summary>
+            Initializes a new NTFS file system.
+            </summary>
+            <param name="stream">The stream to write the new file system to.</param>
+            <param name="label">The label for the new file system.</param>
+            <param name="diskGeometry">The disk geometry of the disk containing the new file system.</param>
+            <param name="firstSector">The first sector of the new file system on the disk.</param>
+            <param name="sectorCount">The number of sectors allocated to the new file system on the disk.</param>
+            <returns>The newly-initialized file system.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Format(System.IO.Stream,System.String,DiscUtils.Geometry,System.Int64,System.Int64,System.Byte[])">
+            <summary>
+            Initializes a new NTFS file system.
+            </summary>
+            <param name="stream">The stream to write the new file system to.</param>
+            <param name="label">The label for the new file system.</param>
+            <param name="diskGeometry">The disk geometry of the disk containing the new file system.</param>
+            <param name="firstSector">The first sector of the new file system on the disk.</param>
+            <param name="sectorCount">The number of sectors allocated to the new file system on the disk.</param>
+            <param name="bootCode">The Operating System's boot code.</param>
+            <returns>The newly-initialized file system.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Format(System.IO.Stream,System.String,DiscUtils.Geometry,System.Int64,System.Int64,DiscUtils.Ntfs.NtfsFormatOptions)">
+            <summary>
+            Initializes a new NTFS file system.
+            </summary>
+            <param name="stream">The stream to write the new file system to.</param>
+            <param name="label">The label for the new file system.</param>
+            <param name="diskGeometry">The disk geometry of the disk containing the new file system.</param>
+            <param name="firstSector">The first sector of the new file system on the disk.</param>
+            <param name="sectorCount">The number of sectors allocated to the new file system on the disk.</param>
+            <param name="options">The formatting options.</param>
+            <returns>The newly-initialized file system.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Format(DiscUtils.VolumeInfo,System.String)">
+            <summary>
+            Initializes a new NTFS file system.
+            </summary>
+            <param name="volume">The volume to format.</param>
+            <param name="label">The label for the new file system.</param>
+            <returns>The newly-initialized file system.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Format(DiscUtils.VolumeInfo,System.String,System.Byte[])">
+            <summary>
+            Initializes a new NTFS file system.
+            </summary>
+            <param name="volume">The volume to format.</param>
+            <param name="label">The label for the new file system.</param>
+            <param name="bootCode">The Operating System's boot code.</param>
+            <returns>The newly-initialized file system.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Format(DiscUtils.VolumeInfo,System.String,DiscUtils.Ntfs.NtfsFormatOptions)">
+            <summary>
+            Initializes a new NTFS file system.
+            </summary>
+            <param name="volume">The volume to format.</param>
+            <param name="label">The label for the new file system.</param>
+            <param name="options">The formatting options.</param>
+            <returns>The newly-initialized file system.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Detect(System.IO.Stream)">
+            <summary>
+            Detects if a stream contains an NTFS file system.
+            </summary>
+            <param name="stream">The stream to inspect.</param>
+            <returns><c>true</c> if NTFS is detected, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetMasterFileTable">
+            <summary>
+            Gets the Master File Table for this file system.
+            </summary>
+            <remarks>
+            Use the returned object to explore the internals of the file system - most people will
+            never need to use this.
+            </remarks>
+            <returns>The Master File Table.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.CreateDirectory(System.String,DiscUtils.Ntfs.NewFileOptions)">
+            <summary>
+            Creates a directory.
+            </summary>
+            <param name="path">The path of the new directory.</param>
+            <param name="options">Options controlling attributes of the new Director, or <c>null</c> for defaults.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.OpenFile(System.String,System.IO.FileMode,System.IO.FileAccess,DiscUtils.Ntfs.NewFileOptions)">
+            <summary>
+            Opens the specified file.
+            </summary>
+            <param name="path">The full path of the file to open.</param>
+            <param name="mode">The file mode for the created stream.</param>
+            <param name="access">The access permissions for the returned stream.</param>
+            <param name="options">Options controlling attributes of a new file, or <c>null</c> for defaults (ignored if file exists).</param>
+            <returns>The new stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.OpenRawStream(System.String,DiscUtils.Ntfs.AttributeType,System.String,System.IO.FileAccess)">
+            <summary>
+            Opens an existing file stream.
+            </summary>
+            <param name="file">The file containing the stream.</param>
+            <param name="type">The type of the stream.</param>
+            <param name="name">The name of the stream.</param>
+            <param name="access">The desired access to the stream.</param>
+            <returns>A stream that can be used to access the file stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.CreateHardLink(System.String,System.String)">
+            <summary>
+            Creates an NTFS hard link to an existing file.
+            </summary>
+            <param name="sourceName">An existing name of the file.</param>
+            <param name="destinationName">The name of the new hard link to the file.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.GetHardLinkCount(System.String)">
+            <summary>
+            Gets the number of hard links to a given file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The number of hard links.</returns>
+            <remarks>All files have at least one hard link.</remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.UpdateBiosGeometry(DiscUtils.Geometry)">
+            <summary>
+            Updates the BIOS Parameter Block (BPB) of the file system to reflect a new disk geometry.
+            </summary>
+            <param name="geometry">The disk's new BIOS geometry.</param>
+            <remarks>Having an accurate geometry in the BPB is essential for booting some Operating Systems (e.g. Windows XP).</remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystem.Dispose(System.Boolean)">
+            <summary>
+            Disposes of this instance.
+            </summary>
+            <param name="disposing">Whether called from Dispose or from a finalizer.</param>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFileSystem.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.NtfsFileSystemChecker">
+            <summary>
+            Class that checks NTFS file system integrity.
+            </summary>
+            <remarks>Poor relation of chkdsk/fsck.</remarks>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystemChecker.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the NtfsFileSystemChecker class.
+            </summary>
+            <param name="diskData">The file system to check.</param>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystemChecker.Check(System.IO.TextWriter,DiscUtils.ReportLevels)">
+            <summary>
+            Checks the integrity of an NTFS file system held in a stream.
+            </summary>
+            <param name="reportOutput">A report on issues found.</param>
+            <param name="levels">The amount of detail to report.</param>
+            <returns><c>true</c> if the file system appears valid, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsFileSystemChecker.BuildClusterMap">
+            <summary>
+            Gets an object that can convert between clusters and files.
+            </summary>
+            <returns>The cluster map.</returns>
+        </member>
+        <member name="T:DiscUtils.Ntfs.NtfsFormatOptions">
+            <summary>
+            Class representing NTFS formatting options.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFormatOptions.BootCode">
+            <summary>
+            Gets or sets the NTFS bootloader code to put in the formatted file system.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsFormatOptions.ComputerAccount">
+            <summary>
+            Gets or sets the SID of the computer account that notionally formatted the file system.
+            </summary>
+            <remarks>
+            Certain ACLs in the file system will refer to the 'local' administrator of the indicated
+            computer account.
+            </remarks>
+        </member>
+        <member name="T:DiscUtils.Ntfs.NtfsOptions">
+            <summary>
+            Class whose instances hold options controlling how <see cref="T:DiscUtils.Ntfs.NtfsFileSystem"/> works.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsOptions.Compressor">
+            <summary>
+            Gets or sets the compression algorithm used for compressing files.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsOptions.FileLengthFromDirectoryEntries">
+            <summary>
+            Gets or sets a value indicating whether file length information comes from directory entries or file data.
+            </summary>
+            <remarks>
+            <para>The default (<c>true</c>) is that file length information is supplied by the directory entry
+            for a file.  In some circumstances that information may be inaccurate - specifically for files with multiple
+            hard links, the directory entries are only updated for the hard link used to open the file.</para>
+            <para>Setting this value to <c>false</c>, will always retrieve the latest information from the underlying
+            NTFS attribute information, which reflects the true size of the file.</para>
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsOptions.HideDosFileNames">
+            <summary>
+            Gets or sets a value indicating whether to hide DOS (8.3-style) file names when enumerating directories.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsOptions.HideHiddenFiles">
+            <summary>
+            Gets or sets a value indicating whether to include hidden files when enumerating directories.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsOptions.HideMetafiles">
+            <summary>
+            Gets or sets a value indicating whether to include file system meta-files when enumerating directories.
+            </summary>
+            <remarks>Meta-files are those with an MFT (Master File Table) index less than 24.</remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsOptions.HideSystemFiles">
+            <summary>
+            Gets or sets a value indicating whether to include system files when enumerating directories.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsOptions.ReadCacheEnabled">
+            <summary>
+            Gets or sets a value indicating whether NTFS-level read caching is used.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Ntfs.NtfsOptions.ShortNameCreation">
+            <summary>
+            Gets or sets a value indicating whether short (8.3) file names are created automatically.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsOptions.ToString">
+            <summary>
+            Returns a string representation of the file system options.
+            </summary>
+            <returns>A string of the form Show: XX XX XX.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsStream.GetContent``1">
+            <summary>
+            Gets the content of a stream.
+            </summary>
+            <typeparam name="T">The stream's content structure.</typeparam>
+            <returns>The content.</returns>
+        </member>
+        <member name="M:DiscUtils.Ntfs.NtfsStream.SetContent``1(``0)">
+            <summary>
+            Sets the content of a stream.
+            </summary>
+            <typeparam name="T">The stream's content structure.</typeparam>
+            <param name="value">The new value for the stream.</param>
+        </member>
+        <member name="T:DiscUtils.Ntfs.RawClusterStream">
+            <summary>
+            Low-level non-resident attribute operations.
+            </summary>
+            <remarks>
+            Responsible for:
+            * Cluster Allocation / Release
+            * Reading clusters from disk
+            * Writing clusters to disk
+            * Substituting zeros for 'sparse'/'unallocated' clusters
+            Not responsible for:
+            * Compression / Decompression
+            * Extending attributes.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Ntfs.ResidentAttributeRecord.InitializedDataLength">
+            <summary>
+            The amount of initialized data in the attribute (in bytes).
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Ntfs.ShortFileNameOption">
+            <summary>
+            Controls whether short file names are created automatically.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.ShortFileNameOption.UseVolumeFlag">
+            <summary>
+            Creates short file names, unless they've been disabled in NTFS.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.ShortFileNameOption.Disabled">
+            <summary>
+            Does not create short names, ignoring the NTFS setting.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Ntfs.ShortFileNameOption.Enabled">
+            <summary>
+            Always creates short names, ignoring the NTFS setting.
+            </summary>
+        </member>
+    </members>
+</doc>

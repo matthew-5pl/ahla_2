@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Lvm</name>
+    </assembly>
+    <members>
+        <member name="P:DiscUtils.Lvm.DiskArea.Size">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.DiskArea.ReadFrom(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.DiskArea.WriteTo(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="T:DiscUtils.Lvm.LogicalVolumeManager">
+            <summary>
+            A class that understands Linux LVM structures, mapping physical volumes to logical volumes.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Lvm.LogicalVolumeManager.#ctor(System.Collections.Generic.IEnumerable{DiscUtils.VirtualDisk})">
+            <summary>
+            Initializes a new instance of the LogicalVolumeManager class.
+            </summary>
+            <param name="disks">The initial set of disks to manage.</param>
+        </member>
+        <member name="M:DiscUtils.Lvm.LogicalVolumeManager.HandlesPhysicalVolume(DiscUtils.PhysicalVolumeInfo)">
+            <summary>
+            Determines if a physical volume contains LVM data.
+            </summary>
+            <param name="volumeInfo">The volume to inspect.</param>
+            <returns><c>true</c> if the physical volume contains LVM data, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Lvm.LogicalVolumeManager.GetLogicalVolumes">
+            <summary>
+            Gets the logical volumes held across the set of managed disks.
+            </summary>
+            <returns>An array of logical volumes.</returns>
+        </member>
+        <member name="M:DiscUtils.Lvm.PhysicalVolume.CalcCrc(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            LVM2.2.02.79:lib/misc/crc.c:_calc_crc_old()
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Lvm.PhysicalVolumeLabel.Size">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.PhysicalVolumeLabel.ReadFrom(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.PhysicalVolumeLabel.WriteTo(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:DiscUtils.Lvm.PvHeader.Size">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.PvHeader.ReadFrom(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.PvHeader.WriteTo(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="F:DiscUtils.Lvm.RawLocationFlags.Ignored">
+            <summary>
+            The raw location descriptor should be ignored
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Lvm.RawLocation.Size">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.RawLocation.ReadFrom(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.RawLocation.WriteTo(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:DiscUtils.Lvm.VolumeGroupMetadata.Size">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.VolumeGroupMetadata.ReadFrom(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DiscUtils.Lvm.VolumeGroupMetadata.WriteTo(System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

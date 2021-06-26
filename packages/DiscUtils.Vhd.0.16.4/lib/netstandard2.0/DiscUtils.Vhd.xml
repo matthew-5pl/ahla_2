@@ -1,0 +1,619 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Vhd</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Vhd.Disk">
+            <summary>
+            Represents a VHD-backed disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.Disk._content">
+            <summary>
+            The stream representing the disk's contents.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.Disk._files">
+            <summary>
+            The list of files that make up the disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are not supported.
+            </summary>
+            <param name="stream">The stream to read.</param>
+            <param name="ownsStream">Indicates if the new instance should control the lifetime of the stream.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="path">The path to the disk image.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="path">The path to the disk image.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(DiscUtils.DiscFileSystem,System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="fileSystem">The file system containing the disk.</param>
+            <param name="path">The file system relative path to the disk.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(System.Collections.Generic.IList{DiscUtils.Vhd.DiskImageFile},DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.
+            </summary>
+            <param name="files">The set of image files.</param>
+            <param name="ownsFiles">Indicates if the new instance controls the lifetime of the image files.</param>
+            <remarks>The disks should be ordered with the first file referencing the second, etc.  The final
+            file must not require any parent.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(DiscUtils.FileLocator,System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="locator">The locator to access relative files.</param>
+            <param name="path">The path to the disk image.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(DiscUtils.Vhd.DiskImageFile,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are not supported.
+            </summary>
+            <param name="file">The file containing the disk.</param>
+            <param name="ownsFile">Indicates if the new instance should control the lifetime of the file.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(DiscUtils.Vhd.DiskImageFile,DiscUtils.Streams.Ownership,DiscUtils.FileLocator,System.String)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="file">The file containing the disk.</param>
+            <param name="ownsFile">Indicates if the new instance should control the lifetime of the file.</param>
+            <param name="parentLocator">Object used to locate the parent disk.</param>
+            <param name="parentPath">Path to the parent disk (if required).</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.#ctor(DiscUtils.Vhd.DiskImageFile,DiscUtils.Streams.Ownership,DiscUtils.Vhd.DiskImageFile,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="file">The file containing the disk.</param>
+            <param name="ownsFile">Indicates if the new instance should control the lifetime of the file.</param>
+            <param name="parentFile">The file containing the disk's parent.</param>
+            <param name="ownsParent">Indicates if the new instance should control the lifetime of the parentFile.</param>
+        </member>
+        <member name="P:DiscUtils.Vhd.Disk.AutoCommitFooter">
+            <summary>
+            Gets or sets a value indicating whether the VHD footer is written every time a new block is allocated.
+            </summary>
+            <remarks>
+            This is enabled by default, disabling this can make write activity faster - however,
+            some software may be unable to access the VHD file if Dispose is not called on this class.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Vhd.Disk.Capacity">
+            <summary>
+            Gets the capacity of the disk (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.Disk.Content">
+            <summary>
+            Gets the content of the disk as a stream.
+            </summary>
+            <remarks>Note the returned stream is not guaranteed to be at any particular position.  The actual position
+            will depend on the last partition table/file system activity, since all access to the disk contents pass
+            through a single stream instance.  Set the stream position before accessing the stream.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vhd.Disk.DiskClass">
+            <summary>
+            Gets the type of disk represented by this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.Disk.DiskTypeInfo">
+            <summary>
+            Gets information about the type of disk.
+            </summary>
+            <remarks>This property provides access to meta-data about the disk format, for example whether the
+            BIOS geometry is preserved in the disk file.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vhd.Disk.Geometry">
+            <summary>
+            Gets the geometry of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.Disk.Layers">
+            <summary>
+            Gets the layers that make up the disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a fixed-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,DiscUtils.Geometry)">
+            <summary>
+            Initializes a stream as a fixed-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,DiscUtils.Geometry)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="blockSize">The size of each block (unit of allocation).</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.InitializeDifferencing(System.String,System.String)">
+            <summary>
+            Creates a new VHD differencing disk file.
+            </summary>
+            <param name="path">The path to the new disk file.</param>
+            <param name="parentPath">The path to the parent disk file.</param>
+            <returns>An object that accesses the new file as a Disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.InitializeDifferencing(System.IO.Stream,DiscUtils.Streams.Ownership,DiscUtils.Vhd.DiskImageFile,DiscUtils.Streams.Ownership,System.String,System.String,System.DateTime)">
+            <summary>
+            Initializes a stream as a differencing disk VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the <paramref name="stream"/>.</param>
+            <param name="parent">The disk this file is a different from.</param>
+            <param name="ownsParent">Indicates if the new instance controls the lifetime of the <paramref name="parent"/> file.</param>
+            <param name="parentAbsolutePath">The full path to the parent disk.</param>
+            <param name="parentRelativePath">The relative path from the new disk to the parent disk.</param>
+            <param name="parentModificationTime">The time the parent disk's file was last modified (from file system).</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.CreateDifferencingDisk(DiscUtils.DiscFileSystem,System.String)">
+            <summary>
+            Create a new differencing disk, possibly within an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to create the disk on.</param>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.CreateDifferencingDisk(System.String)">
+            <summary>
+            Create a new differencing disk.
+            </summary>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.Disk.Dispose(System.Boolean)">
+            <summary>
+            Disposes of underlying resources.
+            </summary>
+            <param name="disposing">Set to <c>true</c> if called within Dispose(),
+            else <c>false</c>.</param>
+        </member>
+        <member name="T:DiscUtils.Vhd.DiskBuilder">
+            <summary>
+            Creates new VHD disks by wrapping existing streams.
+            </summary>
+            <remarks>Using this method for creating virtual disks avoids consuming
+            large amounts of memory, or going via the local file system when the aim
+            is simply to present a VHD version of an existing disk.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskBuilder.DiskType">
+            <summary>
+            Gets or sets the type of VHD file to build.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskBuilder.Build(System.String)">
+            <summary>
+            Initiates the build process.
+            </summary>
+            <param name="baseName">The base name for the VHD, for example 'foo' to create 'foo.vhd'.</param>
+            <returns>A set of one or more logical files that constitute the VHD.  The first file is
+            the 'primary' file that is normally attached to VMs.</returns>
+        </member>
+        <member name="T:DiscUtils.Vhd.DiskImageFile">
+            <summary>
+            Represents a single .VHD file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.DiskImageFile._dynamicHeader">
+            <summary>
+            The VHD file's dynamic header (if not static).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.DiskImageFile._fileLocator">
+            <summary>
+            The object that can be used to locate relative file paths.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.DiskImageFile._fileName">
+            <summary>
+            The file name of this VHD.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.DiskImageFile._fileStream">
+            <summary>
+            The stream containing the VHD file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.DiskImageFile._footer">
+            <summary>
+            The VHD file's footer.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.DiskImageFile._ownsStream">
+            <summary>
+            Indicates if this object controls the lifetime of the stream.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="stream">The stream to interpret.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="stream">The stream to interpret.</param>
+            <param name="ownsStream">Indicates if the new instance should control the lifetime of the stream.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.#ctor(System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="path">The file path to open.</param>
+            <param name="access">Controls how the file can be accessed.</param>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.CreationTimestamp">
+            <summary>
+            Gets the timestamp for this file (when it was created).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.Extents">
+            <summary>
+            Gets the extent that comprises this file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.FullPath">
+            <summary>
+            Gets the full path to this disk layer, or empty string.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.Geometry">
+            <summary>
+            Gets the geometry of the virtual disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.Information">
+            <summary>
+            Gets detailed information about the VHD file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.IsSparse">
+            <summary>
+            Gets a value indicating if the layer only stores meaningful sectors.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.NeedsParent">
+            <summary>
+            Gets a value indicating whether the file is a differencing disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.ParentUniqueId">
+            <summary>
+            Gets the unique id of the parent disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFile.UniqueId">
+            <summary>
+            Gets the unique id of this file.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a fixed-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,DiscUtils.Geometry)">
+            <summary>
+            Initializes a stream as a fixed-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,DiscUtils.Geometry)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="blockSize">The size of each block (unit of allocation).</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,DiscUtils.Geometry,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <param name="blockSize">The size of each block (unit of allocation).</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.InitializeDifferencing(System.IO.Stream,DiscUtils.Streams.Ownership,DiscUtils.Vhd.DiskImageFile,System.String,System.String,System.DateTime)">
+            <summary>
+            Initializes a stream as a differencing disk VHD file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="parent">The disk this file is a different from.</param>
+            <param name="parentAbsolutePath">The full path to the parent disk.</param>
+            <param name="parentRelativePath">The relative path from the new disk to the parent disk.</param>
+            <param name="parentModificationTimeUtc">The time the parent disk's file was last modified (from file system).</param>
+            <returns>An object that accesses the stream as a VHD file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.OpenContent(DiscUtils.Streams.SparseStream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Opens the content of the disk image file as a stream.
+            </summary>
+            <param name="parent">The parent file's content (if any).</param>
+            <param name="ownsParent">Whether the created stream assumes ownership of parent stream.</param>
+            <returns>The new content stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.GetParentLocations">
+            <summary>
+            Gets the location of the parent file, given a base path.
+            </summary>
+            <returns>Array of candidate file locations.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.GetParentLocations(System.String)">
+            <summary>
+            Gets the location of the parent file, given a base path.
+            </summary>
+            <param name="basePath">The full path to this file.</param>
+            <returns>Array of candidate file locations.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.Dispose(System.Boolean)">
+            <summary>
+            Disposes of underlying resources.
+            </summary>
+            <param name="disposing">Set to <c>true</c> if called within Dispose(),
+            else <c>false</c>.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.DiskImageFile.GetParentLocations(DiscUtils.FileLocator)">
+            <summary>
+            Gets the locations of the parent file.
+            </summary>
+            <param name="fileLocator">The file locator to use.</param>
+            <returns>Array of candidate file locations.</returns>
+        </member>
+        <member name="T:DiscUtils.Vhd.DiskImageFileInfo">
+            <summary>
+            Provides read access to detailed information about a VHD file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.Cookie">
+            <summary>
+            Gets the cookie indicating this is a VHD file (should be "conectix").
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.CreationTimestamp">
+            <summary>
+            Gets the time the file was created (note: this is not the modification time).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.CreatorApp">
+            <summary>
+            Gets the application used to create the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.CreatorHostOS">
+            <summary>
+            Gets the host operating system of the application used to create the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.CreatorVersion">
+            <summary>
+            Gets the version of the application used to create the file, packed as an integer.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.CurrentSize">
+            <summary>
+            Gets the current size of the disk (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DiskType">
+            <summary>
+            Gets the type of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicBlockCount">
+            <summary>
+            Gets the number of sparse blocks the file is divided into.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicBlockSize">
+            <summary>
+            Gets the size of a sparse allocation block, in bytes.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicChecksum">
+            <summary>
+            Gets the checksum value of the dynamic header structure.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicCookie">
+            <summary>
+            Gets the cookie indicating a dynamic disk header (should be "cxsparse").
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicHeaderVersion">
+            <summary>
+            Gets the version of the dynamic header structure, packed as an integer.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicParentLocators">
+            <summary>
+            Gets the stored paths to the parent file (for differencing disks).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicParentTimestamp">
+            <summary>
+            Gets the modification timestamp of the parent file (for differencing disks).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicParentUnicodeName">
+            <summary>
+            Gets the unicode name of the parent file (for differencing disks).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.DynamicParentUniqueId">
+            <summary>
+            Gets the unique id of the parent file (for differencing disks).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.Features">
+            <summary>
+            Gets the Features bit field.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.FileFormatVersion">
+            <summary>
+            Gets the file format version packed as an integer.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.FooterChecksum">
+            <summary>
+            Gets the checksum of the file's 'footer'.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.Geometry">
+            <summary>
+            Gets the geometry of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.OriginalSize">
+            <summary>
+            Gets the original size of the disk (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.SavedState">
+            <summary>
+            Gets a flag indicating if the disk has associated saved VM memory state.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhd.DiskImageFileInfo.UniqueId">
+            <summary>
+            Gets the unique identity of this disk.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vhd.FileChecker">
+            <summary>
+            VHD file format verifier, that identifies corrupt VHD files.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhd.FileChecker.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the FileChecker class.
+            </summary>
+            <param name="stream">The VHD file stream.</param>
+        </member>
+        <member name="M:DiscUtils.Vhd.FileChecker.Check(System.IO.TextWriter,DiscUtils.ReportLevels)">
+            <summary>
+            Verifies the VHD file, generating a report and a pass/fail indication.
+            </summary>
+            <param name="reportOutput">The destination for the report.</param>
+            <param name="levels">How verbose the report should be.</param>
+            <returns><c>true</c> if the file is valid, else false.</returns>
+        </member>
+        <member name="T:DiscUtils.Vhd.FileType">
+            <summary>
+            The known types of VHD disks.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.FileType.None">
+            <summary>
+            Unknown type.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.FileType.Fixed">
+            <summary>
+            Fixed-size disk, with space allocated up-front.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.FileType.Dynamic">
+            <summary>
+            Dynamic disk, allocates space as needed.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhd.FileType.Differencing">
+            <summary>
+            Differencing disk, form of dynamic disk that stores changes relative to another disk.
+            </summary>
+        </member>
+    </members>
+</doc>

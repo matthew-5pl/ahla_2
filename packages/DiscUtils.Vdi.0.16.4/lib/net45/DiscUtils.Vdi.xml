@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Vdi</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Vdi.Disk">
+            <summary>
+            Represents a disk stored in VirtualBox (Sun xVM) format.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.#ctor(System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.
+            </summary>
+            <param name="path">The path to the disk.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.#ctor(DiscUtils.Vdi.DiskImageFile)">
+            <summary>
+            Initializes a new instance of the Disk class.
+            </summary>
+            <param name="file">The file containing the disk image.</param>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are not supported.
+            </summary>
+            <param name="stream">The stream to read.</param>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are not supported.
+            </summary>
+            <param name="stream">The stream to read.</param>
+            <param name="ownsStream">Indicates if the new disk should take ownership of <paramref name="stream"/> lifetime.</param>
+        </member>
+        <member name="P:DiscUtils.Vdi.Disk.Capacity">
+            <summary>
+            Gets the capacity of the disk (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vdi.Disk.Content">
+            <summary>
+            Gets the content of the disk as a stream.
+            </summary>
+            <remarks>Note the returned stream is not guaranteed to be at any particular position.  The actual position
+            will depend on the last partition table/file system activity, since all access to the disk contents pass
+            through a single stream instance.  Set the stream position before accessing the stream.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vdi.Disk.DiskClass">
+            <summary>
+            Gets the type of disk represented by this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vdi.Disk.DiskTypeInfo">
+            <summary>
+            Gets information about the type of disk.
+            </summary>
+            <remarks>This property provides access to meta-data about the disk format, for example whether the
+            BIOS geometry is preserved in the disk file.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vdi.Disk.Geometry">
+            <summary>
+            Gets the geometry of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vdi.Disk.Layers">
+            <summary>
+            Gets the layers that make up the disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a fixed-sized VDI file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VDI file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VDI file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VDI file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.CreateDifferencingDisk(DiscUtils.DiscFileSystem,System.String)">
+            <summary>
+            Create a new differencing disk, possibly within an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to create the disk on.</param>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.CreateDifferencingDisk(System.String)">
+            <summary>
+            Create a new differencing disk.
+            </summary>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vdi.Disk.Dispose(System.Boolean)">
+            <summary>
+            Disposes of underlying resources.
+            </summary>
+            <param name="disposing">Set to <c>true</c> if called within Dispose(),
+            else <c>false</c>.</param>
+        </member>
+        <member name="T:DiscUtils.Vdi.DiskImageFile">
+            <summary>
+            Represents a single VirtualBox disk (.vdi file).
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vdi.DiskImageFile._ownsStream">
+            <summary>
+            Indicates if this object controls the lifetime of the stream.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vdi.DiskImageFile._writeOccurred">
+            <summary>
+            Indicates if a write occurred, indicating the marker in the header needs
+            to be updated.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vdi.DiskImageFile.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="stream">The stream to interpret.</param>
+        </member>
+        <member name="M:DiscUtils.Vdi.DiskImageFile.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="stream">The stream to interpret.</param>
+            <param name="ownsStream">Indicates if the new instance should control the lifetime of the stream.</param>
+        </member>
+        <member name="P:DiscUtils.Vdi.DiskImageFile.Geometry">
+            <summary>
+            Gets (a guess at) the geometry of the virtual disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vdi.DiskImageFile.IsSparse">
+            <summary>
+            Gets a value indicating if the layer only stores meaningful sectors.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vdi.DiskImageFile.NeedsParent">
+            <summary>
+            Gets a value indicating whether the file is a differencing disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vdi.DiskImageFile.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a fixed-sized VDI file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VDI file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vdi.DiskImageFile.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VDI file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VDI file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vdi.DiskImageFile.OpenContent(DiscUtils.Streams.SparseStream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Opens the content of the disk image file as a stream.
+            </summary>
+            <param name="parent">The parent file's content (if any).</param>
+            <param name="ownsParent">Whether the created stream assumes ownership of parent stream.</param>
+            <returns>The new content stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Vdi.DiskImageFile.GetParentLocations">
+            <summary>
+            Gets the possible locations of the parent file (if any).
+            </summary>
+            <returns>Array of strings, empty if no parent.</returns>
+        </member>
+        <member name="M:DiscUtils.Vdi.DiskImageFile.Dispose(System.Boolean)">
+            <summary>
+            Disposes of underlying resources.
+            </summary>
+            <param name="disposing">Set to <c>true</c> if called within Dispose(),
+            else <c>false</c>.</param>
+        </member>
+    </members>
+</doc>

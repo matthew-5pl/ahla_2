@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Swap</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Swap.SwapFileSystem">
+            <summary>
+            Class for accessing Swap file systems.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Swap.SwapFileSystem.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the SwapFileSystem class.
+            </summary>
+            <param name="stream">The stream containing the file system.</param>
+        </member>
+        <member name="P:DiscUtils.Swap.SwapFileSystem.FriendlyName">
+            <summary>
+            Gets the friendly name for the file system.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Swap.SwapFileSystem.VolumeLabel">
+            <summary>
+            Gets the volume label.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Swap.SwapFileSystem.Detect(System.IO.Stream)">
+            <summary>
+            Detects if a stream contains a Swap file system.
+            </summary>
+            <param name="stream">The stream to inspect.</param>
+            <returns><c>true</c> if the stream appears to be a Swap file system, else <c>false</c>.</returns>
+        </member>
+        <member name="P:DiscUtils.Swap.SwapFileSystem.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Swap.SwapFileSystem.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Swap.SwapFileSystem.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+    </members>
+</doc>

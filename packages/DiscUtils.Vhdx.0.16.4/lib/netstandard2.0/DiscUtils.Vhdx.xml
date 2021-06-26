@@ -1,0 +1,893 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Vhdx</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Vhdx.Chunk">
+            <summary>
+            Represents a chunk of blocks in the Block Allocation Table.
+            </summary>
+            <remarks>
+            The BAT entries for a chunk are always present in the BAT, but the data blocks and
+            sector bitmap blocks may (or may not) be present.
+            </remarks>
+        </member>
+        <member name="T:DiscUtils.Vhdx.Disk">
+            <summary>
+            Represents a VHDX-backed disk.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.Disk._content">
+            <summary>
+            The stream representing the disk's contents.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.Disk._files">
+            <summary>
+            The list of files that make up the disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are not supported.
+            </summary>
+            <param name="stream">The stream to read.</param>
+            <param name="ownsStream">Indicates if the new instance should control the lifetime of the stream.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="path">The path to the disk image.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="path">The path to the disk image.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(DiscUtils.DiscFileSystem,System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="fileSystem">The file system containing the disk.</param>
+            <param name="path">The file system relative path to the disk.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(System.Collections.Generic.IList{DiscUtils.Vhdx.DiskImageFile},DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.
+            </summary>
+            <param name="files">The set of image files.</param>
+            <param name="ownsFiles">Indicates if the new instance controls the lifetime of the image files.</param>
+            <remarks>The disks should be ordered with the first file referencing the second, etc.  The final
+            file must not require any parent.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(DiscUtils.FileLocator,System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="locator">The locator to access relative files.</param>
+            <param name="path">The path to the disk image.</param>
+            <param name="access">The access requested to the disk.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(DiscUtils.Vhdx.DiskImageFile,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are not supported.
+            </summary>
+            <param name="file">The file containing the disk.</param>
+            <param name="ownsFile">Indicates if the new instance should control the lifetime of the file.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(DiscUtils.Vhdx.DiskImageFile,DiscUtils.Streams.Ownership,DiscUtils.FileLocator,System.String)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="file">The file containing the disk.</param>
+            <param name="ownsFile">Indicates if the new instance should control the lifetime of the file.</param>
+            <param name="parentLocator">Object used to locate the parent disk.</param>
+            <param name="parentPath">Path to the parent disk (if required).</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.#ctor(DiscUtils.Vhdx.DiskImageFile,DiscUtils.Streams.Ownership,DiscUtils.Vhdx.DiskImageFile,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.  Differencing disks are supported.
+            </summary>
+            <param name="file">The file containing the disk.</param>
+            <param name="ownsFile">Indicates if the new instance should control the lifetime of the file.</param>
+            <param name="parentFile">The file containing the disk's parent.</param>
+            <param name="ownsParent">Indicates if the new instance should control the lifetime of the parentFile.</param>
+        </member>
+        <member name="P:DiscUtils.Vhdx.Disk.BlockSize">
+            <summary>
+            Gets the size of the disk's logical blocks (aka sector size), in bytes.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.Disk.Capacity">
+            <summary>
+            Gets the capacity of the disk (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.Disk.Content">
+            <summary>
+            Gets the content of the disk as a stream.
+            </summary>
+            <remarks>Note the returned stream is not guaranteed to be at any particular position.  The actual position
+            will depend on the last partition table/file system activity, since all access to the disk contents pass
+            through a single stream instance.  Set the stream position before accessing the stream.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vhdx.Disk.DiskClass">
+            <summary>
+            Gets the type of disk represented by this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.Disk.DiskTypeInfo">
+            <summary>
+            Gets information about the type of disk.
+            </summary>
+            <remarks>This property provides access to meta-data about the disk format, for example whether the
+            BIOS geometry is preserved in the disk file.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vhdx.Disk.Geometry">
+            <summary>
+            Gets the geometry of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.Disk.Layers">
+            <summary>
+            Gets the layers that make up the disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a fixed-sized VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,DiscUtils.Geometry)">
+            <summary>
+            Initializes a stream as a fixed-sized VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="blockSize">The size of each block (unit of allocation).</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.InitializeDifferencing(System.String,System.String)">
+            <summary>
+            Creates a new VHDX differencing disk file.
+            </summary>
+            <param name="path">The path to the new disk file.</param>
+            <param name="parentPath">The path to the parent disk file.</param>
+            <returns>An object that accesses the new file as a Disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.InitializeDifferencing(System.IO.Stream,DiscUtils.Streams.Ownership,DiscUtils.Vhdx.DiskImageFile,DiscUtils.Streams.Ownership,System.String,System.String,System.DateTime)">
+            <summary>
+            Initializes a stream as a differencing disk VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the <paramref name="stream"/>.</param>
+            <param name="parent">The disk this file is a different from.</param>
+            <param name="ownsParent">Indicates if the new instance controls the lifetime of the <paramref name="parent"/> file.</param>
+            <param name="parentAbsolutePath">The full path to the parent disk.</param>
+            <param name="parentRelativePath">The relative path from the new disk to the parent disk.</param>
+            <param name="parentModificationTime">The time the parent disk's file was last modified (from file system).</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.CreateDifferencingDisk(DiscUtils.DiscFileSystem,System.String)">
+            <summary>
+            Create a new differencing disk, possibly within an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to create the disk on.</param>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.CreateDifferencingDisk(System.String)">
+            <summary>
+            Create a new differencing disk.
+            </summary>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.Disk.Dispose(System.Boolean)">
+            <summary>
+            Disposes of underlying resources.
+            </summary>
+            <param name="disposing">Set to <c>true</c> if called within Dispose(),
+            else <c>false</c>.</param>
+        </member>
+        <member name="T:DiscUtils.Vhdx.DiskBuilder">
+            <summary>
+            Creates new VHD disks by wrapping existing streams.
+            </summary>
+            <remarks>Using this method for creating virtual disks avoids consuming
+            large amounts of memory, or going via the local file system when the aim
+            is simply to present a VHD version of an existing disk.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskBuilder.BlockSize">
+            <summary>
+            The VHDX block size, or <c>0</c> (indicating default).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskBuilder.DiskType">
+            <summary>
+            Gets or sets the type of VHDX file to build.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskBuilder.Build(System.String)">
+            <summary>
+            Initiates the build process.
+            </summary>
+            <param name="baseName">The base name for the VHDX, for example 'foo' to create 'foo.vhdx'.</param>
+            <returns>A set of one or more logical files that constitute the virtual disk.  The first file is
+            the 'primary' file that is normally attached to VMs.</returns>
+        </member>
+        <member name="T:DiscUtils.Vhdx.DiskImageFile">
+            <summary>
+            Represents a single .VHDX file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._activeHeader">
+            <summary>
+            Which VHDX header is active.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._batStream">
+            <summary>
+            Block Allocation Table for disk content.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._fileLocator">
+            <summary>
+            The object that can be used to locate relative file paths.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._fileName">
+            <summary>
+            The file name of this VHDX.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._fileStream">
+            <summary>
+            The stream containing the VHDX file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._freeSpace">
+            <summary>
+            Table of all free space in the file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._header">
+            <summary>
+            Value of the active VHDX header.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._logicalStream">
+            <summary>
+            The stream containing the logical VHDX content and metadata allowing for log replay.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._metadata">
+            <summary>
+            VHDX metadata region content.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._ownsStream">
+            <summary>
+            Indicates if this object controls the lifetime of the stream.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskImageFile._regionTable">
+            <summary>
+            The set of VHDX regions.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="stream">The stream to interpret.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="stream">The stream to interpret.</param>
+            <param name="ownsStream">Indicates if the new instance should control the lifetime of the stream.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.#ctor(System.String,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="path">The file path to open.</param>
+            <param name="access">Controls how the file can be accessed.</param>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.Extents">
+            <summary>
+            Gets the extent that comprises this file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.FullPath">
+            <summary>
+            Gets the full path to this disk layer, or empty string.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.Geometry">
+            <summary>
+            Gets the geometry of the virtual disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.Information">
+            <summary>
+            Gets detailed information about the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.IsSparse">
+            <summary>
+            Gets a value indicating if the layer only stores meaningful sectors.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.LogicalSectorSize">
+            <summary>
+            Gets the logical sector size of the virtual disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.NeedsParent">
+            <summary>
+            Gets a value indicating whether the file is a differencing disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.ParentUniqueId">
+            <summary>
+            Gets the unique id of the parent disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFile.UniqueId">
+            <summary>
+            Gets the unique id of this file.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a fixed-sized VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.InitializeFixed(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,DiscUtils.Geometry)">
+            <summary>
+            Initializes a stream as a fixed-sized VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="geometry">The desired geometry of the new disk, or <c>null</c> for default.</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.InitializeDynamic(System.IO.Stream,DiscUtils.Streams.Ownership,System.Int64,System.Int64)">
+            <summary>
+            Initializes a stream as a dynamically-sized VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="capacity">The desired capacity of the new disk.</param>
+            <param name="blockSize">The size of each block (unit of allocation).</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.InitializeDifferencing(System.IO.Stream,DiscUtils.Streams.Ownership,DiscUtils.Vhdx.DiskImageFile,System.String,System.String,System.DateTime)">
+            <summary>
+            Initializes a stream as a differencing disk VHDX file.
+            </summary>
+            <param name="stream">The stream to initialize.</param>
+            <param name="ownsStream">Indicates if the new instance controls the lifetime of the stream.</param>
+            <param name="parent">The disk this file is a different from.</param>
+            <param name="parentAbsolutePath">The full path to the parent disk.</param>
+            <param name="parentRelativePath">The relative path from the new disk to the parent disk.</param>
+            <param name="parentModificationTimeUtc">The time the parent disk's file was last modified (from file system).</param>
+            <returns>An object that accesses the stream as a VHDX file.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.OpenRegion(System.Guid)">
+            <summary>
+            Opens an existing region within the VHDX file.
+            </summary>
+            <param name="region">Identifier for the region to open.</param>
+            <returns>A stream containing the region data.</returns>
+            <remarks>Regions are an extension mechanism in VHDX - with some regions defined by
+            the VHDX specification to hold metadata and the block allocation data.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.OpenContent(DiscUtils.Streams.SparseStream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Opens the content of the disk image file as a stream.
+            </summary>
+            <param name="parent">The parent file's content (if any).</param>
+            <param name="ownsParent">Whether the created stream assumes ownership of parent stream.</param>
+            <returns>The new content stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.GetParentLocations">
+            <summary>
+            Gets the location of the parent file, given a base path.
+            </summary>
+            <returns>Array of candidate file locations.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.GetParentLocations(System.String)">
+            <summary>
+            Gets the location of the parent file, given a base path.
+            </summary>
+            <param name="basePath">The full path to this file.</param>
+            <returns>Array of candidate file locations.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.Dispose(System.Boolean)">
+            <summary>
+            Disposes of underlying resources.
+            </summary>
+            <param name="disposing">Set to <c>true</c> if called within Dispose(),
+            else <c>false</c>.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.DiskImageFile.GetParentLocations(DiscUtils.FileLocator)">
+            <summary>
+            Gets the locations of the parent file.
+            </summary>
+            <param name="fileLocator">The file locator to use.</param>
+            <returns>Array of candidate file locations.</returns>
+        </member>
+        <member name="T:DiscUtils.Vhdx.DiskImageFileInfo">
+            <summary>
+            Detailed information about a VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.ActiveHeader">
+            <summary>
+            Gets the active header for the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.ActiveLogSequence">
+            <summary>
+            Gets the active log sequence for this VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.BlockSize">
+            <summary>
+            Gets the block size of the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.Creator">
+            <summary>
+            Gets the VHDX 'parser' that created the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.DiskSize">
+            <summary>
+            Gets the logical size of the disk represented by the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.FirstHeader">
+            <summary>
+            Gets the first header (by file location) of the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.HasParent">
+            <summary>
+            Gets a value indicating whether the VHDX file has a parent file (i.e. is a differencing file).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.LeaveBlocksAllocated">
+            <summary>
+            Gets a value indicating whether blocks should be left allocated within the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.LogicalSectorSize">
+            <summary>
+            Gets the logical sector size of the disk represented by the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.MetadataTable">
+            <summary>
+            Gets the metadata table of the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.ParentLocatorEntries">
+            <summary>
+            Gets the set of parent locators, for differencing files.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.ParentLocatorType">
+            <summary>
+            Gets the parent locator type, for differencing files.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.PhysicalSectorSize">
+            <summary>
+            Gets the physical sector size of disk represented by the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.RegionTable">
+            <summary>
+            Gets the region table of the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.SecondHeader">
+            <summary>
+            Gets the second header (by file location) of the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.DiskImageFileInfo.Signature">
+            <summary>
+            Gets the file signature.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vhdx.DiskType">
+            <summary>
+            The known types of VHDX disks.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskType.None">
+            <summary>
+            Unknown type.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskType.Fixed">
+            <summary>
+            Fixed-size disk, with space allocated up-front.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskType.Dynamic">
+            <summary>
+            Dynamic disk, allocates space as needed.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Vhdx.DiskType.Differencing">
+            <summary>
+            Differencing disk, form of dynamic disk that stores changes relative to another disk.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vhdx.HeaderInfo">
+            <summary>
+            Class representing a VHDX header.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.Checksum">
+            <summary>
+            Gets the checksum of the header information.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.DataWriteGuid">
+            <summary>
+            Gets a unique GUID indicating when the content of a VHDX file has changed.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.FileWriteGuid">
+            <summary>
+            Gets a unique GUID indicating when a VHDX file has been substantively modified.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.LogGuid">
+            <summary>
+            Gets the GUID indicating which log records are valid.
+            </summary>
+            <remarks>
+            The NULL GUID indicates there are no log records to replay.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.LogLength">
+            <summary>
+            Gets the length of the VHDX log.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.LogOffset">
+            <summary>
+            Gets the offset of the VHDX log within the file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.LogVersion">
+            <summary>
+            Gets the version of the log information, expected to be Zero.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.SequenceNumber">
+            <summary>
+            Gets the sequence number of the header information.
+            </summary>
+            <remarks>
+            VHDX files contain two copies of the header, both contain a sequence number, the highest
+            sequence number represents the current header information.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.Signature">
+            <summary>
+            Gets the signature of the header.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.HeaderInfo.Version">
+            <summary>
+            Gets the VHDX file format version, expected to be One.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vhdx.LogEntryInfo">
+            <summary>
+            Provides information about a entry in the VHDX log.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.LogEntryInfo.FlushedFileOffset">
+            <summary>
+            Gets the VHDX file size (in bytes) that is at least as large as the size of the VHDX file at the time the log entry was written.
+            </summary>
+            <remarks>When shrinking a VHDX file this field is used to indicate the new (smaller) size.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vhdx.LogEntryInfo.IsEmpty">
+            <summary>
+            Gets a value indicating whether this log entry doesn't contain any data (or zero) descriptors.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.LogEntryInfo.LastFileOffset">
+            <summary>
+            Gets the file size (in bytes) that all allocated file structures fit into, at the time the log entry was written.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.LogEntryInfo.ModifiedExtents">
+            <summary>
+            Gets the file extents that would be modified by replaying this log entry.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.LogEntryInfo.SequenceNumber">
+            <summary>
+            Gets the sequence number of this log entry.
+            </summary>
+            <remarks>Consecutively numbered log entries form a sequence.</remarks>
+        </member>
+        <member name="P:DiscUtils.Vhdx.LogEntryInfo.Tail">
+            <summary>
+            Gets the oldest logged activity that has not been persisted to disk.
+            </summary>
+            <remarks>The tail indicates how far back in the log replay must start in order
+            to fully recreate the state of the VHDX file's metadata.</remarks>
+        </member>
+        <member name="T:DiscUtils.Vhdx.MetadataInfo">
+            <summary>
+            Class representing an individual metadata item.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataInfo.IsRequired">
+            <summary>
+            Gets a value indicating whether parsing this metadata is needed to open the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataInfo.IsUser">
+            <summary>
+            Gets a value indicating whether this is system or user metadata.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataInfo.IsVirtualDisk">
+            <summary>
+            Gets a value indicating whether this is virtual disk metadata, or VHDX file metadata.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataInfo.ItemId">
+            <summary>
+            Gets the unique identifier for the metadata.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataInfo.Length">
+            <summary>
+            Gets the length of the metadata.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataInfo.Offset">
+            <summary>
+            Gets the offset within the metadata region of the metadata.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataInfo.WellKnownName">
+            <summary>
+            Gets the descriptive name for well-known metadata.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Vhdx.MetadataTableInfo">
+            <summary>
+            Class representing the table of file metadata.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataTableInfo.Signature">
+            <summary>
+            Gets the signature of the metadata table.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataTableInfo.Count">
+            <summary>
+            Gets the number of metadata items present.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.MetadataTableInfo.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this table is read-only (always true).
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.MetadataTableInfo.Add(DiscUtils.Vhdx.MetadataInfo)">
+            <summary>
+            Always throws InvalidOperationException.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.MetadataTableInfo.Clear">
+            <summary>
+            Always throws InvalidOperationException.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.MetadataTableInfo.Contains(DiscUtils.Vhdx.MetadataInfo)">
+            <summary>
+            Determines if the specified metadata item is present already.
+            </summary>
+            <param name="item">The item to look for.</param>
+            <returns><c>true</c> if present, else <c>false</c>.</returns>
+            <remarks>The comparison is based on the metadata item identity, not the value.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vhdx.MetadataTableInfo.CopyTo(DiscUtils.Vhdx.MetadataInfo[],System.Int32)">
+            <summary>
+            Copies this metadata table to an array.
+            </summary>
+            <param name="array">The destination array.</param>
+            <param name="arrayIndex">The index of the first item to populate in the array.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.MetadataTableInfo.Remove(DiscUtils.Vhdx.MetadataInfo)">
+            <summary>
+            Removes an item from the table.
+            </summary>
+            <param name="item">The item to remove.</param>
+            <returns><c>true</c> if the item was removed, else <c>false</c>.</returns>
+            <remarks>Always throws InvalidOperationException as the table is read-only.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vhdx.MetadataTableInfo.GetEnumerator">
+            <summary>
+            Gets an enumerator for the metadata items.
+            </summary>
+            <returns>A new enumerator.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.MetadataTableInfo.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets an enumerator for the metadata items.
+            </summary>
+            <returns>A new enumerator.</returns>
+        </member>
+        <member name="T:DiscUtils.Vhdx.RegionInfo">
+            <summary>
+            Class representing a region in a VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionInfo.FileOffset">
+            <summary>
+            Gets the file offset of this region within the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionInfo.Guid">
+            <summary>
+            Gets the unique identifier for this region.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionInfo.IsRequired">
+            <summary>
+            Gets a value indicating whether this region is required.
+            </summary>
+            <remarks>
+            To load a VHDX file, a parser must be able to interpret all regions marked as required.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionInfo.Length">
+            <summary>
+            Gets the length of this region within the VHDX file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionInfo.WellKnownName">
+            <summary>
+            Gets the well-known name (if any) of the region.
+            </summary>
+            <remarks>
+            VHDX 1.0 specification defines the "BAT" and "Metadata Region", unknown regions
+            will return as <c>null</c>.
+            </remarks>
+        </member>
+        <member name="T:DiscUtils.Vhdx.RegionTableInfo">
+            <summary>
+            Class providing information about a VHDX region table.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionTableInfo.Checksum">
+            <summary>
+            Gets the checksum of the region table.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionTableInfo.Signature">
+            <summary>
+            Gets the signature of the region table.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionTableInfo.Count">
+            <summary>
+            Gets the number of metadata items present.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Vhdx.RegionTableInfo.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this table is read-only (always true).
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.RegionTableInfo.Add(DiscUtils.Vhdx.RegionInfo)">
+            <summary>
+            Always throws InvalidOperationException.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.RegionTableInfo.Clear">
+            <summary>
+            Always throws InvalidOperationException.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Vhdx.RegionTableInfo.Contains(DiscUtils.Vhdx.RegionInfo)">
+            <summary>
+            Determines if the specified region is present already.
+            </summary>
+            <param name="item">The item to look for.</param>
+            <returns><c>true</c> if present, else <c>false</c>.</returns>
+            <remarks>The comparison is based on the region identity.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vhdx.RegionTableInfo.CopyTo(DiscUtils.Vhdx.RegionInfo[],System.Int32)">
+            <summary>
+            Copies this region table to an array.
+            </summary>
+            <param name="array">The destination array.</param>
+            <param name="arrayIndex">The index of the first item to populate in the array.</param>
+        </member>
+        <member name="M:DiscUtils.Vhdx.RegionTableInfo.Remove(DiscUtils.Vhdx.RegionInfo)">
+            <summary>
+            Removes an item from the table.
+            </summary>
+            <param name="item">The item to remove.</param>
+            <returns><c>true</c> if the item was removed, else <c>false</c>.</returns>
+            <remarks>Always throws InvalidOperationException as the table is read-only.</remarks>
+        </member>
+        <member name="M:DiscUtils.Vhdx.RegionTableInfo.GetEnumerator">
+            <summary>
+            Gets an enumerator for the regions.
+            </summary>
+            <returns>A new enumerator.</returns>
+        </member>
+        <member name="M:DiscUtils.Vhdx.RegionTableInfo.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets an enumerator for the regions.
+            </summary>
+            <returns>A new enumerator.</returns>
+        </member>
+    </members>
+</doc>

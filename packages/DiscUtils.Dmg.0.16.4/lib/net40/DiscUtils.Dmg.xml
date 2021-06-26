@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Dmg</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Dmg.Disk">
+            <summary>
+            Represents a DMG (aka UDIF) backed disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Dmg.Disk.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the Disk class.
+            </summary>
+            <param name="stream">The stream containing the disk.</param>
+            <param name="ownsStream">Whether the new instance takes ownership of stream.</param>
+        </member>
+        <member name="P:DiscUtils.Dmg.Disk.Capacity">
+            <summary>
+            Gets the capacity of the disk (in bytes).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Dmg.Disk.Content">
+            <summary>
+            Gets the content of the disk as a stream.
+            </summary>
+            <remarks>
+            Note the returned stream is not guaranteed to be at any particular position.  The actual position
+            will depend on the last partition table/file system activity, since all access to the disk contents pass
+            through a single stream instance.  Set the stream position before accessing the stream.
+            </remarks>
+        </member>
+        <member name="P:DiscUtils.Dmg.Disk.DiskClass">
+            <summary>
+            Gets the type of disk represented by this object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Dmg.Disk.DiskTypeInfo">
+            <summary>
+            Gets information about the type of disk.
+            </summary>
+            <remarks>This property provides access to meta-data about the disk format, for example whether the
+            BIOS geometry is preserved in the disk file.</remarks>
+        </member>
+        <member name="P:DiscUtils.Dmg.Disk.Geometry">
+            <summary>
+            Gets the geometry of the disk.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Dmg.Disk.Layers">
+            <summary>
+            Gets the layers that make up the disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Dmg.Disk.CreateDifferencingDisk(DiscUtils.DiscFileSystem,System.String)">
+            <summary>
+            Create a new differencing disk, possibly within an existing disk.
+            </summary>
+            <param name="fileSystem">The file system to create the disk on.</param>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Dmg.Disk.CreateDifferencingDisk(System.String)">
+            <summary>
+            Create a new differencing disk.
+            </summary>
+            <param name="path">The path (or URI) for the disk to create.</param>
+            <returns>The newly created disk.</returns>
+        </member>
+        <member name="M:DiscUtils.Dmg.Disk.Dispose(System.Boolean)">
+            <summary>
+            Disposes of this instance, freeing underlying resources.
+            </summary>
+            <param name="disposing"><c>true</c> if called from Dispose.</param>
+        </member>
+        <member name="M:DiscUtils.Dmg.DiskImageFile.#ctor(System.IO.Stream,DiscUtils.Streams.Ownership)">
+            <summary>
+            Initializes a new instance of the DiskImageFile class.
+            </summary>
+            <param name="stream">The stream to read.</param>
+            <param name="ownsStream">Indicates if the new instance should control the lifetime of the stream.</param>
+        </member>
+        <member name="P:DiscUtils.Dmg.DiskImageFile.Geometry">
+            <summary>
+            Gets the geometry of the virtual disk layer.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Dmg.DiskImageFile.NeedsParent">
+            <summary>
+            Gets a value indicating whether the file is a differencing disk.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Dmg.DiskImageFile.GetParentLocations">
+            <summary>
+            Gets the location of the parent file, given a base path.
+            </summary>
+            <returns>Array of candidate file locations.</returns>
+        </member>
+        <member name="P:DiscUtils.Dmg.UdifPartitionTable.Partitions">
+            <summary>
+            Gets the partitions present on the disk.
+            </summary>
+        </member>
+    </members>
+</doc>

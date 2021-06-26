@@ -1,0 +1,343 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Wim</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Wim.FileResourceStream">
+            <summary>
+            Provides access to a (compressed) resource within the WIM file.
+            </summary>
+            <remarks>Stream access must be strictly sequential.</remarks>
+        </member>
+        <member name="T:DiscUtils.Wim.LzxBitStream">
+            <summary>
+            Converts a byte stream into a bit stream.
+            </summary>
+            <remarks>
+            <para>To avoid alignment issues, the bit stream is infinitely long.  Once the
+            converted byte stream is consumed, an infinite sequence of zero's is emulated.</para>
+            <para>It is strongly recommended to use some kind of in memory buffering (such as a
+            BufferedStream) for the wrapped stream.  This class makes a large number of small
+            reads.</para>.</remarks>
+        </member>
+        <member name="T:DiscUtils.Wim.LzxStream">
+            <summary>
+            Class to read data compressed using LZX algorithm.
+            </summary>
+            <remarks>This is not a general purpose LZX decompressor - it makes
+            simplifying assumptions, such as being able to load the entire stream
+            contents into memory..</remarks>
+        </member>
+        <member name="M:DiscUtils.Wim.LzxStream.FixupBlockBuffer">
+            <summary>
+            Fix up CALL instruction optimization.
+            </summary>
+            <remarks>A slightly odd feature of LZX for optimizing executable compression is that
+            relative CALL instructions (opcode E8) are converted to absolute values before compression.
+            This feature seems to always be turned-on in WIM files, so we have to apply the reverse
+            conversion.</remarks>
+        </member>
+        <member name="T:DiscUtils.Wim.WimFile">
+            <summary>
+            Provides access to the contents of WIM (Windows Imaging) files.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFile.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the WimFile class.
+            </summary>
+            <param name="stream">A stream of the WIM file contents.</param>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFile.BootImage">
+            <summary>
+            Gets the (zero-based) index of the bootable image.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFile.FileFormatVersion">
+            <summary>
+            Gets the version of the file format.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFile.Guid">
+            <summary>
+            Gets the identifying GUID for this WIM file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFile.ImageCount">
+            <summary>
+            Gets the number of disk images within this file.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFile.Manifest">
+            <summary>
+            Gets the embedded manifest describing the file and the contained images.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFile.GetImage(System.Int32)">
+            <summary>
+            Gets a particular image within the file (zero-based index).
+            </summary>
+            <param name="index">The index of the image to retrieve.</param>
+            <returns>The image as a file system.</returns>
+            <remarks>The XML manifest file uses a one-based index, whereas this
+            method is zero-based.</remarks>
+        </member>
+        <member name="T:DiscUtils.Wim.WimFileSystem">
+            <summary>
+            Provides access to the file system within a WIM file image.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFileSystem.FriendlyName">
+            <summary>
+            Provides a friendly description of the file system type.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetSecurity(System.String)">
+            <summary>
+            Gets the security descriptor associated with the file or directory.
+            </summary>
+            <param name="path">The file or directory to inspect.</param>
+            <returns>The security descriptor.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.SetSecurity(System.String,System.Security.AccessControl.RawSecurityDescriptor)">
+            <summary>
+            Sets the security descriptor associated with the file or directory.
+            </summary>
+            <param name="path">The file or directory to change.</param>
+            <param name="securityDescriptor">The new security descriptor.</param>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetReparsePoint(System.String)">
+            <summary>
+            Gets the reparse point data associated with a file or directory.
+            </summary>
+            <param name="path">The file to query.</param>
+            <returns>The reparse point information.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.SetReparsePoint(System.String,DiscUtils.ReparsePoint)">
+            <summary>
+            Sets the reparse point data on a file or directory.
+            </summary>
+            <param name="path">The file to set the reparse point on.</param>
+            <param name="reparsePoint">The new reparse point.</param>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.RemoveReparsePoint(System.String)">
+            <summary>
+            Removes a reparse point from a file or directory, without deleting the file or directory.
+            </summary>
+            <param name="path">The path to the file or directory to remove the reparse point from.</param>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetShortName(System.String)">
+            <summary>
+            Gets the short name for a given path.
+            </summary>
+            <param name="path">The path to convert.</param>
+            <returns>The short name.</returns>
+            <remarks>
+            This method only gets the short name for the final part of the path, to
+            convert a complete path, call this method repeatedly, once for each path
+            segment.  If there is no short name for the given path,<c>null</c> is
+            returned.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.SetShortName(System.String,System.String)">
+            <summary>
+            Sets the short name for a given file or directory.
+            </summary>
+            <param name="path">The full path to the file or directory to change.</param>
+            <param name="shortName">The shortName, which should not include a path.</param>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetFileStandardInformation(System.String)">
+            <summary>
+            Gets the standard file information for a file.
+            </summary>
+            <param name="path">The full path to the file or directory to query.</param>
+            <returns>The standard file information.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.SetFileStandardInformation(System.String,DiscUtils.WindowsFileInformation)">
+            <summary>
+            Sets the standard file information for a file.
+            </summary>
+            <param name="path">The full path to the file or directory to query.</param>
+            <param name="info">The standard file information.</param>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetAlternateDataStreams(System.String)">
+            <summary>
+            Gets the names of the alternate data streams for a file.
+            </summary>
+            <param name="path">The path to the file.</param>
+            <returns>
+            The list of alternate data streams (or empty, if none).  To access the contents
+            of the alternate streams, use OpenFile(path + ":" + name, ...).
+            </returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetFileId(System.String)">
+            <summary>
+            Gets the file id for a given path.
+            </summary>
+            <param name="path">The path to get the id of.</param>
+            <returns>The file id, or -1.</returns>
+            <remarks>
+            The returned file id uniquely identifies the file, and is shared by all hard
+            links to the same file.  The value -1 indicates no unique identifier is
+            available, and so it can be assumed the file has no hard links.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.HasHardLinks(System.String)">
+            <summary>
+            Indicates whether the file is known by other names.
+            </summary>
+            <param name="path">The file to inspect.</param>
+            <returns><c>true</c> if the file has other names, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.DirectoryExists(System.String)">
+            <summary>
+            Indicates if a directory exists.
+            </summary>
+            <param name="path">The path to test.</param>
+            <returns>true if the directory exists.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.FileExists(System.String)">
+            <summary>
+            Indicates if a file exists.
+            </summary>
+            <param name="path">The path to test.</param>
+            <returns>true if the file exists.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetDirectories(System.String,System.String,System.IO.SearchOption)">
+            <summary>
+            Gets the names of subdirectories in a specified directory matching a specified
+            search pattern, using a value to determine whether to search subdirectories.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <param name="searchOption">Indicates whether to search subdirectories.</param>
+            <returns>Array of directories matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetFiles(System.String,System.String,System.IO.SearchOption)">
+            <summary>
+            Gets the names of files in a specified directory matching a specified
+            search pattern, using a value to determine whether to search subdirectories.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <param name="searchOption">Indicates whether to search subdirectories.</param>
+            <returns>Array of files matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetFileSystemEntries(System.String)">
+            <summary>
+            Gets the names of all files and subdirectories in a specified directory.
+            </summary>
+            <param name="path">The path to search.</param>
+            <returns>Array of files and subdirectories matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetFileSystemEntries(System.String,System.String)">
+            <summary>
+            Gets the names of files and subdirectories in a specified directory matching a specified
+            search pattern.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <returns>Array of files and subdirectories matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.OpenFile(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <summary>
+            Opens the specified file.
+            </summary>
+            <param name="path">The full path of the file to open.</param>
+            <param name="mode">The file mode for the created stream.</param>
+            <param name="access">The access permissions for the created stream.</param>
+            <returns>The new stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetAttributes(System.String)">
+            <summary>
+            Gets the attributes of a file or directory.
+            </summary>
+            <param name="path">The file or directory to inspect.</param>
+            <returns>The attributes of the file or directory.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetCreationTimeUtc(System.String)">
+            <summary>
+            Gets the creation time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The creation time.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetLastAccessTimeUtc(System.String)">
+            <summary>
+            Gets the last access time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The last access time.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetLastWriteTimeUtc(System.String)">
+            <summary>
+            Gets the last modification time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The last write time.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetFileLength(System.String)">
+            <summary>
+            Gets the length of a file.
+            </summary>
+            <param name="path">The path to the file.</param>
+            <returns>The length in bytes.</returns>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.GetFileHash(System.String)">
+            <summary>
+            Gets the SHA-1 hash of a file's contents.
+            </summary>
+            <param name="path">The path to the file.</param>
+            <returns>The 160-bit hash.</returns>
+            <remarks>The WIM file format internally stores the SHA-1 hash of files.
+            This method provides access to the stored hash.  Callers can use this
+            value to compare against the actual hash of the byte stream to validate
+            the integrity of the file contents.</remarks>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFileSystem.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFileSystem.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Wim.WimFileSystem.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Wim.WimFileSystem.Dispose(System.Boolean)">
+            <summary>
+            Disposes of this instance.
+            </summary>
+            <param name="disposing"><c>true</c> if disposing, else <c>false</c>.</param>
+        </member>
+        <member name="T:DiscUtils.Wim.XpressBitStream">
+            <summary>
+            Converts a byte stream into a bit stream.
+            </summary>
+            <remarks>Note the precise read-ahead behaviour of this stream is critical.
+            Some data is read directly from the underlying stream when decoding an Xpress
+            stream - so it's critical the underlying stream position is in the correct
+            location.</remarks>
+        </member>
+        <member name="T:DiscUtils.Wim.XpressStream">
+            <summary>
+            Implements the XPRESS decompression algorithm.
+            </summary>
+            <remarks>This class is optimized for the case where the entire stream contents
+            fit into memory, it is not suitable for unbounded streams.</remarks>
+        </member>
+        <member name="M:DiscUtils.Wim.XpressStream.#ctor(System.IO.Stream,System.Int32)">
+            <summary>
+            Initializes a new instance of the XpressStream class.
+            </summary>
+            <param name="compressed">The stream of compressed data.</param>
+            <param name="count">The length of this stream (in uncompressed bytes).</param>
+        </member>
+    </members>
+</doc>

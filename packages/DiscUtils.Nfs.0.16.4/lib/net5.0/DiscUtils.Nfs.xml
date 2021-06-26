@@ -1,0 +1,785 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Nfs</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Nfs.Nfs3CallResult">
+            <summary>
+            Base class for all NFS result structures.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3CreateMode.Unchecked">
+            <summary>
+            UNCHECKED
+            means that the file should be created without checking
+            for the existence of a duplicate file in the same
+            directory. In this case, how.obj_attributes is a sattr3
+            describing the initial attributes for the file.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3CreateMode.Guarded">
+            <summary>
+            GUARDED
+            specifies that the server should check for the presence
+            of a duplicate file before performing the create and
+            should fail the request with NFS3ERR_EXIST if a
+            duplicate file exists. If the file does not exist, the
+            request is performed as described for UNCHECKED.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3CreateMode.Exclusive">
+            <summary>
+            EXCLUSIVE specifies that the server is to follow
+            exclusive creation semantics, using the verifier to
+            ensure exclusive creation of the target. No attributes
+            may be provided in this case, since the server may use
+            the target file metadata to store the createverf3
+            verifier.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Nfs.Nfs3Exception">
+            <summary>
+            Exception thrown when some invalid file system data is found, indicating probably corruption.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Nfs.Nfs3Exception.#ctor">
+            <summary>
+            Initializes a new instance of the Nfs3Exception class.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Nfs.Nfs3Exception.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Nfs3Exception class.
+            </summary>
+            <param name="message">The exception message.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.Nfs3Exception.#ctor(System.String,DiscUtils.Nfs.Nfs3Status)">
+            <summary>
+            Initializes a new instance of the Nfs3Exception class.
+            </summary>
+            <param name="message">The exception message.</param>
+            <param name="status">The status result of an NFS procedure.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.Nfs3Exception.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the Nfs3Exception class.
+            </summary>
+            <param name="message">The exception message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.Nfs3Exception.#ctor(DiscUtils.Nfs.Nfs3Status)">
+            <summary>
+            Initializes a new instance of the Nfs3Exception class.
+            </summary>
+            <param name="status">The status result of an NFS procedure.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.Nfs3Exception.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the Nfs3Exception class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">The streaming context.</param>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3Exception.NfsStatus">
+            <summary>
+            Gets the NFS status code that lead to the exception.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Nfs.Nfs3Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Serializes this exception.
+            </summary>
+            <param name="info">The object to populate with serialized data.</param>
+            <param name="context">The context for this serialization.</param>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.DirectoryPreferredBytes">
+            <summary>
+            The preferred size of a READDIR request.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.FileSystemProperties">
+            <summary>
+            A bit mask of file system properties.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.MaxFileSize">
+            <summary>
+            The maximum size of a file on the file system.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.ReadMaxBytes">
+            <summary>
+            The maximum size in bytes of a READ request supported
+            by the server. Any READ with a number greater than
+            rtmax will result in a short read of rtmax bytes or
+            less.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.ReadMultipleSize">
+            <summary>
+            The suggested multiple for the size of a READ request.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.ReadPreferredBytes">
+            <summary>
+            The preferred size of a READ request. This should be
+            the same as rtmax unless there is a clear benefit in
+            performance or efficiency.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.TimePrecision">
+            <summary>
+            The server time granularity. When setting a file time
+            using SETATTR, the server guarantees only to preserve
+            times to this accuracy. If this is {0, 1}, the server
+            can support nanosecond times, {0, 1000000}
+            denotes millisecond precision, and {1, 0} indicates that times
+            are accurate only to the nearest second.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.WriteMaxBytes">
+            <summary>
+            The maximum size of a WRITE request supported by the
+            server. In general, the client is limited by wtmax
+            since there is no guarantee that a server can handle a
+            larger write. Any WRITE with a count greater than wtmax
+            will result in a short write of at most wtmax bytes.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.WriteMultipleSize">
+            <summary>
+            The suggested multiple for the size of a WRITE
+            request.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemInfo.WritePreferredBytes">
+            <summary>
+            The preferred size of a WRITE request. This should be
+            the same as wtmax unless there is a clear benefit in
+            performance or efficiency.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemStat.TotalSizeBytes">
+            <summary>
+            The total size, in bytes, of the file system.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemStat.FreeSpaceBytes">
+            <summary>
+            The amount of free space, in bytes, in the file
+            system.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemStat.AvailableFreeSpaceBytes">
+            <summary>
+            The amount of free space, in bytes, available to the
+            user identified by the authentication information in
+            the RPC.  (This reflects space that is reserved by the
+            file system; it does not reflect any quota system
+            implemented by the server.)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemStat.FileSlotCount">
+            <summary>
+            The total number of file slots in the file system. (On
+            a UNIX server, this often corresponds to the number of
+            inodes configured.)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemStat.FreeFileSlotCount">
+            <summary>
+            The number of free file slots in the file system.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemStat.AvailableFreeFileSlotCount">
+            <summary>
+            The number of free file slots that are available to the
+            user corresponding to the authentication information in
+            the RPC.  (This reflects slots that are reserved by the
+            file system; it does not reflect any quota system
+            implemented by the server.)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3FileSystemStat.Invariant">
+            <summary>
+            A measure of file system volatility: this is the number
+            of seconds for which the file system is not expected to
+            change.For a volatile, frequently updated file system,
+            this will be 0. For an immutable file system, such as a
+            CD-ROM, this would be the largest unsigned integer.For
+            file systems that are infrequently modified, for
+            example, one containing local executable programs and
+            on-line documentation, a value corresponding to a few
+            hours or days might be used. The client may use this as
+            a hint in tuning its cache management. Note however,
+            this measure is assumed to be dynamic and may change at
+            any time.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3PathConfResult.ObjectAttributes">
+            <summary>
+            Gets or sets the attributes of the object specified by object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3PathConfResult.LinkMax">
+            <summary>
+            Gets or sets the maximum number of hard links to an object.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3PathConfResult.NameMax">
+            <summary>
+            Gets or sets the maximum length of a component of a filename.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3PathConfResult.NoTrunc">
+            <summary>
+            Gets or sets a value indicating whether the server will reject any request that
+            includes a name longer than name_max with the error,
+            NFS3ERR_NAMETOOLONG.If FALSE, any length name over
+            name_max bytes will be silently truncated to name_max
+            bytes.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3PathConfResult.ChownRestricted">
+            <summary>
+            Gets or sets a value indicating whether server will reject any request to change
+            either the owner or the group associated with a file if
+            the caller is not the privileged user. (Uid 0.)
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3PathConfResult.CaseInsensitive">
+            <summary>
+            Gets or sets a value indicating whether the server file system does not distinguish
+            case when interpreting filenames.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.Nfs3PathConfResult.CasePreserving">
+            <summary>
+            Gets or sets a value indicating whether the server file system will preserve the case
+            of a name during a CREATE, MKDIR, MKNOD, SYMLINK,
+            RENAME, or LINK operation.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Nfs.Nfs3Status">
+            <summary>
+            NFS status codes.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.Ok">
+            <summary>
+            Indicates the call completed successfully.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.NotOwner">
+            <summary>
+            The operation was not allowed because the caller is either not a
+            privileged user (root) or not the owner of the target of the operation.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.NoSuchEntity">
+            <summary>
+            The file or directory name specified does not exist.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.IOError">
+            <summary>
+            A hard error (for example, a disk error) occurred while processing
+            the requested operation.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.NoSuchDeviceOrAddress">
+            <summary>
+            No such device or address.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.AccessDenied">
+            <summary>
+            The caller does not have the correct permission to perform the requested
+            operation. Contrast this with NotOwner, which restricts itself to owner
+            or privileged user permission failures.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.FileExists">
+            <summary>
+            The file specified already exists.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.AttemptedCrossDeviceHardLink">
+            <summary>
+            Attempt to do a cross-device hard link.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.NoSuchDevice">
+            <summary>
+            No such device.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.NotDirectory">
+            <summary>
+            The caller specified a non-directory in a directory operation.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.IsADirectory">
+            <summary>
+            The caller specified a directory in a non-directory operation.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.InvalidArgument">
+            <summary>
+            Invalid argument or unsupported argument for an operation.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.FileTooLarge">
+            <summary>
+            The operation would have caused a file to grow beyond the server's
+            limit.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.NoSpaceAvailable">
+            <summary>
+            The operation would have caused the server's file system to exceed its
+            limit.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.ReadOnlyFileSystem">
+            <summary>
+            A modifying operation was attempted on a read-only file system.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.TooManyHardLinks">
+            <summary>
+            Too many hard links.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.NameTooLong">
+            <summary>
+            The filename in an operation was too long.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.DirectoryNotEmpty">
+            <summary>
+            An attempt was made to remove a directory that was not empty.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.QuotaHardLimitExceeded">
+            <summary>
+            The user's resource limit on the server has been exceeded.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.StaleFileHandle">
+            <summary>
+            The file referred to no longer exists or access to it has been revoked.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.TooManyRemoteAccessLevels">
+            <summary>
+            The file handle given in the arguments referred to a file on a non-local
+            file system on the server.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.BadFileHandle">
+            <summary>
+            The file handle failed internal consistency checks.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.UpdateSynchronizationError">
+            <summary>
+            Update synchronization mismatch was detected during a SETATTR operation.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.StaleCookie">
+            <summary>
+            Directory enumeration cookie is stale.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.NotSupported">
+            <summary>
+            Operation is not supported.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.TooSmall">
+            <summary>
+            Buffer or request is too small.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.ServerFault">
+            <summary>
+            An error occurred on the server which does not map to any of the legal NFS
+            version 3 protocol error values.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.BadType">
+            <summary>
+            An attempt was made to create an object of a type not supported by the
+            server.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.SlowJukebox">
+            <summary>
+            The server initiated the request, but was not able to complete it in a
+            timely fashion.
+            </summary>
+            <remarks>
+            The client should wait and then try the request with a new RPC transaction ID.
+            For example, this error should be returned from a server that supports
+            hierarchical storage and receives a request to process a file that has been
+            migrated. In this case, the server should start the immigration process and
+            respond to client with this error.
+            </remarks>
+        </member>
+        <member name="F:DiscUtils.Nfs.Nfs3Status.Unknown">
+            <summary>
+            An unknown error occured.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Nfs.NfsFileSystem">
+            <summary>
+            A file system backed by an NFS server.
+            </summary>
+            <remarks>NFS is a common storage protocol for Virtual Machines.  Currently, only NFS v3 is supported.</remarks>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the NfsFileSystem class.
+            </summary>
+            <param name="address">The address of the NFS server (IP or DNS address).</param>
+            <param name="mountPoint">The mount point on the server to root the file system.</param>
+            <remarks>
+            The created instance uses default credentials.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.#ctor(System.String,DiscUtils.Nfs.RpcCredentials,System.String)">
+            <summary>
+            Initializes a new instance of the NfsFileSystem class.
+            </summary>
+            <param name="address">The address of the NFS server (IP or DNS address).</param>
+            <param name="credentials">The credentials to use when accessing the NFS server.</param>
+            <param name="mountPoint">The mount point on the server to root the file system.</param>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystem.CanWrite">
+            <summary>
+            Gets whether this file system supports modification (true for NFS).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystem.FriendlyName">
+            <summary>
+            Gets the friendly name for this file system (NFS).
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystem.NfsOptions">
+            <summary>
+            Gets the options controlling this instance.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystem.PreferredReadSize">
+            <summary>
+            Gets the preferred NFS read size.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystem.PreferredWriteSize">
+            <summary>
+            Gets the preferred NFS write size.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetExports(System.String)">
+            <summary>
+            Gets the folders exported by a server.
+            </summary>
+            <param name="address">The address of the server.</param>
+            <returns>An enumeration of exported folders.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.CopyFile(System.String,System.String,System.Boolean)">
+            <summary>
+            Copies a file from one location to another.
+            </summary>
+            <param name="sourceFile">The source file to copy.</param>
+            <param name="destinationFile">The destination path.</param>
+            <param name="overwrite">Whether to overwrite any existing file (true), or fail if such a file exists.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.CreateDirectory(System.String)">
+            <summary>
+            Creates a directory at the specified path.
+            </summary>
+            <param name="path">The path of the directory to create.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.DeleteDirectory(System.String)">
+            <summary>
+            Deletes a directory at the specified path.
+            </summary>
+            <param name="path">The directory to delete.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.DeleteFile(System.String)">
+            <summary>
+            Deletes a file at the specified path.
+            </summary>
+            <param name="path">The path of the file to delete.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.DirectoryExists(System.String)">
+            <summary>
+            Indicates whether a specified path exists, and refers to a directory.
+            </summary>
+            <param name="path">The path to inspect.</param>
+            <returns><c>true</c> if the path is a directory, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.FileExists(System.String)">
+            <summary>
+            Indicates whether a specified path exists, and refers to a directory.
+            </summary>
+            <param name="path">The path to inspect.</param>
+            <returns><c>true</c> if the path is a file, else <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetDirectories(System.String,System.String,System.IO.SearchOption)">
+            <summary>
+            Gets the names of subdirectories in a specified directory matching a specified
+            search pattern, using a value to determine whether to search subdirectories.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <param name="searchOption">Indicates whether to search subdirectories.</param>
+            <returns>Array of directories matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetFiles(System.String,System.String,System.IO.SearchOption)">
+            <summary>
+            Gets the names of files in a specified directory matching a specified
+            search pattern, using a value to determine whether to search subdirectories.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <param name="searchOption">Indicates whether to search subdirectories.</param>
+            <returns>Array of files matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetFileSystemEntries(System.String)">
+            <summary>
+            Gets the names of all files and subdirectories in a specified directory.
+            </summary>
+            <param name="path">The path to search.</param>
+            <returns>Array of files and subdirectories matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetFileSystemEntries(System.String,System.String)">
+            <summary>
+            Gets the names of files and subdirectories in a specified directory matching a specified
+            search pattern.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against.</param>
+            <returns>Array of files and subdirectories matching the search pattern.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.MoveDirectory(System.String,System.String)">
+            <summary>
+            Moves a directory.
+            </summary>
+            <param name="sourceDirectoryName">The directory to move.</param>
+            <param name="destinationDirectoryName">The target directory name.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.MoveFile(System.String,System.String,System.Boolean)">
+            <summary>
+            Moves a file, allowing an existing file to be overwritten.
+            </summary>
+            <param name="sourceName">The file to move.</param>
+            <param name="destinationName">The target file name.</param>
+            <param name="overwrite">Whether to permit a destination file to be overwritten.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.OpenFile(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <summary>
+            Opens the specified file.
+            </summary>
+            <param name="path">The full path of the file to open.</param>
+            <param name="mode">The file mode for the created stream.</param>
+            <param name="access">The access permissions for the created stream.</param>
+            <returns>The new stream.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetAttributes(System.String)">
+            <summary>
+            Gets the attributes of a file or directory.
+            </summary>
+            <param name="path">The file or directory to inspect.</param>
+            <returns>The attributes of the file or directory.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.SetAttributes(System.String,System.IO.FileAttributes)">
+            <summary>
+            Sets the attributes of a file or directory.
+            </summary>
+            <param name="path">The file or directory to change.</param>
+            <param name="newValue">The new attributes of the file or directory.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetCreationTimeUtc(System.String)">
+            <summary>
+            Gets the creation time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The creation time.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.SetCreationTimeUtc(System.String,System.DateTime)">
+            <summary>
+            Sets the creation time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <param name="newTime">The new time to set.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetLastAccessTimeUtc(System.String)">
+            <summary>
+            Gets the last access time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The last access time.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <summary>
+            Sets the last access time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <param name="newTime">The new time to set.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetLastWriteTimeUtc(System.String)">
+            <summary>
+            Gets the last modification time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <returns>The last write time.</returns>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <summary>
+            Sets the last modification time (in UTC) of a file or directory.
+            </summary>
+            <param name="path">The path of the file or directory.</param>
+            <param name="newTime">The new time to set.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.GetFileLength(System.String)">
+            <summary>
+            Gets the length of a file.
+            </summary>
+            <param name="path">The path to the file.</param>
+            <returns>The length in bytes.</returns>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystem.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystem.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystem.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystem.Dispose(System.Boolean)">
+            <summary>
+            Disposes of this instance, freeing up any resources used.
+            </summary>
+            <param name="disposing"><c>true</c> if called from Dispose, else <c>false</c>.</param>
+        </member>
+        <member name="T:DiscUtils.Nfs.NfsFileSystemOptions">
+            <summary>
+            Options controlling the behaviour of NFS file system.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Nfs.NfsFileSystemOptions.#ctor">
+            <summary>
+            Initializes a new instance of the NfsFileSystemOptions class.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystemOptions.NewDirectoryPermissions">
+            <summary>
+            Gets or sets the permission mask to apply to newly created directories.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Nfs.NfsFileSystemOptions.NewFilePermissions">
+            <summary>
+            Gets or sets the permission mask to apply to newly created files.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Nfs.PortMap2Mapping">
+             <summary> 
+             A mapping of(program, version, network ID) to address
+            
+             The network identifier(r_netid):
+             This is a string that represents a local identification for a
+             network.This is defined by a system administrator based on local
+             conventions, and cannot be depended on to have the same value on
+             every system.
+             </summary>
+        </member>
+        <member name="T:DiscUtils.Nfs.RpcCredentials">
+            <summary>
+            Base class for all RPC credentials.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Nfs.RpcException">
+            <summary>
+            Exception thrown when some invalid file system data is found, indicating probably corruption.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Nfs.RpcException.#ctor">
+            <summary>
+            Initializes a new instance of the RpcException class.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Nfs.RpcException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the RpcException class.
+            </summary>
+            <param name="message">The exception message.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.RpcException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the RpcException class.
+            </summary>
+            <param name="message">The exception message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.RpcException.#ctor(DiscUtils.Nfs.RpcReplyHeader)">
+            <summary>
+            Initializes a new instance of the RpcException class.
+            </summary>
+            <param name="reply">The RPC reply from the server.</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.RpcException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the RpcException class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">The streaming context.</param>
+        </member>
+        <member name="T:DiscUtils.Nfs.RpcNullCredentials">
+            <summary>
+            Null RPC credentials, for use with anonymous services / procedures.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Nfs.RpcUnixCredential">
+            <summary>
+            RPC credentials used for accessing an access-controlled server.
+            </summary>
+            <remarks>Note there is no server-side authentication with these credentials,
+            instead the client is assumed to be trusted.</remarks>
+        </member>
+        <member name="F:DiscUtils.Nfs.RpcUnixCredential.Default">
+            <summary>
+            Default credentials (nobody).
+            </summary>
+            <remarks>
+            There is no standard UID/GID for nobody.  This default credential
+            assumes 65534 for both the user and group.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.Nfs.RpcUnixCredential.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the RpcUnixCredential class.
+            </summary>
+            <param name="user">The user's unique id (UID).</param>
+            <param name="primaryGroup">The user's primary group id (GID).</param>
+        </member>
+        <member name="M:DiscUtils.Nfs.RpcUnixCredential.#ctor(System.Int32,System.Int32,System.Int32[])">
+            <summary>
+            Initializes a new instance of the RpcUnixCredential class.
+            </summary>
+            <param name="user">The user's unique id (UID).</param>
+            <param name="primaryGroup">The user's primary group id (GID).</param>
+            <param name="groups">The user's supplementary group ids.</param>
+        </member>
+    </members>
+</doc>

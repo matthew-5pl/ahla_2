@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.SquashFs</name>
+    </assembly>
+    <members>
+        <member name="M:DiscUtils.SquashFs.IdTableWriter.AllocateId(System.Int32)">
+            <summary>
+            Allocates space for a User / Group id.
+            </summary>
+            <param name="id">The id to allocate.</param>
+            <returns>The key of the id.</returns>
+        </member>
+        <member name="T:DiscUtils.SquashFs.SquashFileSystemBuilder">
+            <summary>
+            Class that creates SquashFs file systems.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the SquashFileSystemBuilder class.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.SquashFs.SquashFileSystemBuilder.DefaultDirectoryPermissions">
+            <summary>
+            Gets or sets the default permissions used for new directories.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.SquashFs.SquashFileSystemBuilder.DefaultFilePermissions">
+            <summary>
+            Gets or sets the default permissions used for new files.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.SquashFs.SquashFileSystemBuilder.DefaultGroup">
+            <summary>
+            Gets or sets the default group id used for new files and directories.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.SquashFs.SquashFileSystemBuilder.DefaultUser">
+            <summary>
+            Gets or sets the default user id used for new files and directories.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.AddFile(System.String,System.IO.Stream)">
+            <summary>
+            Adds a file to the file system.
+            </summary>
+            <param name="path">The full path to the file.</param>
+            <param name="content">The content of the file.</param>
+            <remarks>
+            <para>The created file with have the default owner, group, permissions and the
+            current time as it's modification time.  Any missing parent directories will be
+            created, with default owner, group and directory permissions.</para>
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.AddFile(System.String,System.String)">
+            <summary>
+            Adds a file to the file system.
+            </summary>
+            <param name="path">The full path to the file.</param>
+            <param name="contentPath">Local file system path to the file to add.</param>
+            <remarks>
+            <para>The created file with have the default owner, group, permissions and the
+            current time as it's modification time.  Any missing parent directories will be
+            created with default owner, group and directory permissions.</para>
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.AddFile(System.String,System.IO.Stream,System.Int32,System.Int32,DiscUtils.UnixFilePermissions,System.DateTime)">
+            <summary>
+            Adds a file to the file system.
+            </summary>
+            <param name="path">The full path to the file.</param>
+            <param name="content">The content of the file.</param>
+            <param name="user">The owner of the file.</param>
+            <param name="group">The group of the file.</param>
+            <param name="permissions">The access permission of the file.</param>
+            <param name="modificationTime">The modification time of the file.</param>
+            <remarks>
+            <para>Any missing parent directories will be created with the specified owner and group,
+            default directory permissions and the current time as the modification time.</para>
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.AddFile(System.String,System.String,System.Int32,System.Int32,DiscUtils.UnixFilePermissions,System.DateTime)">
+            <summary>
+            Adds a file to the file system.
+            </summary>
+            <param name="path">The full path to the file.</param>
+            <param name="contentPath">Local file system path to the file to add.</param>
+            <param name="user">The owner of the file.</param>
+            <param name="group">The group of the file.</param>
+            <param name="permissions">The access permission of the file.</param>
+            <param name="modificationTime">The modification time of the file.</param>
+            <remarks>
+            <para>Any missing parent directories will be created with the specified owner and group,
+            default directory permissions and the current time as the modification time.</para>
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.AddDirectory(System.String)">
+            <summary>
+            Adds a directory to the file system.
+            </summary>
+            <param name="path">The full path to the directory.</param>
+            <remarks>
+            <para>The created directory with have the default owner, group, permissions and the
+            current time as it's modification time.  Any missing parent directories will be
+            created with default owner, group and directory permissions.</para>
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.AddDirectory(System.String,System.Int32,System.Int32,DiscUtils.UnixFilePermissions,System.DateTime)">
+            <summary>
+            Adds a directory to the file system.
+            </summary>
+            <param name="path">The full path to the directory.</param>
+            <param name="user">The owner of the directory.</param>
+            <param name="group">The group of the directory.</param>
+            <param name="permissions">The access permission of the directory.</param>
+            <param name="modificationTime">The modification time of the directory.</param>
+            <remarks>
+            <para>The created directory with have the default owner, group, permissions and the
+            current time as it's modification time.  Any missing parent directories will be
+            created with the specified owner, group, and directory permissions.  The current time
+            will be used as the modification time.</para>
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.Build">
+            <summary>
+            Builds the file system, returning a new stream.
+            </summary>
+            <returns>The stream containing the file system.</returns>
+            <remarks>
+            This method uses a temporary file to construct the file system, use of
+            the <c>Build(Stream)</c> or <c>Build(string)</c> variant is recommended
+            when the file system will be written to a file.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.Build(System.IO.Stream)">
+            <summary>
+            Writes the file system to an existing stream.
+            </summary>
+            <param name="output">The stream to write to.</param>
+            <remarks>The <c>output</c> stream must support seeking and writing.</remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.Build(System.String)">
+            <summary>
+            Writes the stream contents to a file.
+            </summary>
+            <param name="outputFile">The file to write to.</param>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.AllocateInode">
+            <summary>
+            Allocates a unique inode identifier.
+            </summary>
+            <returns>The inode identifier.</returns>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.WriteDataBlock(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes a block of file data, possibly compressing it.
+            </summary>
+            <param name="buffer">The data to write.</param>
+            <param name="offset">Offset of the first byte to write.</param>
+            <param name="count">The number of bytes to write.</param>
+            <returns>
+            The 'length' of the (possibly compressed) data written, including
+            a flag indicating compression (or not).
+            </returns>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemBuilder.GetRoot">
+            <summary>
+            Delayed root construction, to permit default permissions / identity info to be
+            set before root is created.
+            </summary>
+            <returns>The root directory.</returns>
+        </member>
+        <member name="T:DiscUtils.SquashFs.SquashFileSystemReader">
+            <summary>
+            Implementation of SquashFs file system reader.
+            </summary>
+            <remarks>
+            SquashFs is a read-only file system, it is not designed to be modified
+            after it is created.
+            </remarks>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemReader.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the SquashFileSystemReader class.
+            </summary>
+            <param name="data">The stream to read the file system image from.</param>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemReader.GetUnixFileInfo(System.String)">
+            <summary>
+            Gets Unix file information about a file or directory.
+            </summary>
+            <param name="path">Path to the file or directory.</param>
+            <returns>Unix information about the file or directory.</returns>
+        </member>
+        <member name="M:DiscUtils.SquashFs.SquashFileSystemReader.Detect(System.IO.Stream)">
+            <summary>
+            Detects if the stream contains a SquashFs file system.
+            </summary>
+            <param name="stream">The stream to inspect.</param>
+            <returns><c>true</c> if stream appears to be a SquashFs file system.</returns>
+        </member>
+        <member name="P:DiscUtils.SquashFs.VfsSquashFileSystemReader.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.SquashFs.VfsSquashFileSystemReader.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.SquashFs.VfsSquashFileSystemReader.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+    </members>
+</doc>

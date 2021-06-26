@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscUtils.Udf</name>
+    </assembly>
+    <members>
+        <member name="T:DiscUtils.Udf.ExtendedAttribute">
+            <summary>
+            Contains extended attribute information for a file or directory.
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Udf.ExtendedAttribute.Data">
+            <summary>
+            Gets the data contained in the attribute.
+            </summary>
+            <remarks>The format of the data will depend on the identifier.</remarks>
+        </member>
+        <member name="P:DiscUtils.Udf.ExtendedAttribute.Identifier">
+            <summary>
+            Gets the value of the identifier of this attribute.
+            </summary>
+            <remarks>A typical identifier is "*UDF DVD CGMS Info".</remarks>
+        </member>
+        <member name="T:DiscUtils.Udf.FilePermissions">
+            <summary>
+            Standard Unix-style file system permissions.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.None">
+            <summary>
+            No permissions.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OthersExecute">
+            <summary>
+            Any user execute permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OthersWrite">
+            <summary>
+            Any user write permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OthersRead">
+            <summary>
+            Any user read permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OthersChangeAttributes">
+            <summary>
+            Any user change attributes permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OthersDelete">
+            <summary>
+            Any user delete permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.GroupExecute">
+            <summary>
+            Group execute permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.GroupWrite">
+            <summary>
+            Group write permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.GroupRead">
+            <summary>
+            Group read permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.GroupChangeAttributes">
+            <summary>
+            Group change attributes permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.GroupDelete">
+            <summary>
+            Group delete permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OwnerExecute">
+            <summary>
+            Owner execute permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OwnerWrite">
+            <summary>
+            Owner write permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OwnerRead">
+            <summary>
+            Owner read permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OwnerChangeAttributes">
+            <summary>
+            Owner change attributes permission.
+            </summary>
+        </member>
+        <member name="F:DiscUtils.Udf.FilePermissions.OwnerDelete">
+            <summary>
+            Owner delete permission.
+            </summary>
+        </member>
+        <member name="T:DiscUtils.Udf.UdfReader">
+            <summary>
+            Class for accessing OSTA Universal Disk Format file systems.
+            </summary>
+        </member>
+        <member name="M:DiscUtils.Udf.UdfReader.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the UdfReader class.
+            </summary>
+            <param name="data">The stream containing the UDF file system.</param>
+        </member>
+        <member name="M:DiscUtils.Udf.UdfReader.#ctor(System.IO.Stream,System.Int32)">
+            <summary>
+            Initializes a new instance of the UdfReader class.
+            </summary>
+            <param name="data">The stream containing the UDF file system.</param>
+            <param name="sectorSize">The sector size of the physical media.</param>
+        </member>
+        <member name="M:DiscUtils.Udf.UdfReader.Detect(System.IO.Stream)">
+            <summary>
+            Detects if a stream contains a valid UDF file system.
+            </summary>
+            <param name="data">The stream to inspect.</param>
+            <returns><c>true</c> if the stream contains a UDF file system, else false.</returns>
+        </member>
+        <member name="M:DiscUtils.Udf.UdfReader.GetExtendedAttributes(System.String)">
+            <summary>
+            Gets UDF extended attributes for a file or directory.
+            </summary>
+            <param name="path">Path to the file or directory.</param>
+            <returns>Array of extended attributes, which may be empty or <c>null</c> if
+            there are no extended attributes.</returns>
+        </member>
+        <member name="P:DiscUtils.Udf.UdfReader.VfsUdfReader.Size">
+            <summary>
+            Size of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Udf.UdfReader.VfsUdfReader.UsedSpace">
+            <summary>
+            Used space of the Filesystem in bytes
+            </summary>
+        </member>
+        <member name="P:DiscUtils.Udf.UdfReader.VfsUdfReader.AvailableSpace">
+            <summary>
+            Available space of the Filesystem in bytes
+            </summary>
+        </member>
+    </members>
+</doc>
